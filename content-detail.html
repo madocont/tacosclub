@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contents - タコス倶楽部</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kaisei+HarunoUmi:wght@400;500;700&family=Montserrat:wght@400;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      color: #333;
+      background: #fffaf5;
+      min-height: 100vh;
+    }
+
+    .detail-header {
+      background: #fd6405;
+      color: #fff;
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .detail-header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+    }
+
+    .detail-header a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .detail-header a:hover { opacity: 1; }
+
+    .detail-body {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 20px;
+    }
+
+    .detail-tag {
+      display: inline-block;
+      background: #fff5f0;
+      color: #fd6405;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.75rem;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    .detail-title {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .detail-description {
+      color: #999;
+      font-size: 0.95rem;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #f0e8e0;
+    }
+
+    .detail-content {
+      font-size: 1rem;
+      line-height: 2;
+      color: #555;
+      white-space: pre-wrap;
+    }
+
+    footer {
+      background: #fd6405;
+      color: #fff;
+      text-align: center;
+      padding: 32px 20px;
+      margin-top: 60px;
+    }
+
+    footer p {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="detail-header">
+    <h1>Contents</h1>
+    <a href="contents.html">← Back</a>
+  </div>
+
+  <div class="detail-body" id="detail-body">
+    <p>読み込み中...</p>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 タコス倶楽部 All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    async function loadDetail() {
+      const params = new URLSearchParams(window.location.search);
+      const id = Number(params.get('id'));
+
+      let data;
+      const stored = localStorage.getItem('tacos-club-data');
+      if (stored) {
+        data = JSON.parse(stored);
+      } else {
+        const res = await fetch('data.json');
+        data = await res.json();
+      }
+
+      const item = (data.contents || []).find(c => c.id === id);
+      const body = document.getElementById('detail-body');
+
+      if (!item) {
+        body.innerHTML = '<p>コンテンツが見つかりませんでした。</p>';
+        return;
+      }
+
+      document.title = `${item.title} - タコス倶楽部`;
+
+      body.innerHTML = `
+        <span class="detail-tag">${item.tag}</span>
+        <h2 class="detail-title">${item.title}</h2>
+        <p class="detail-description">${item.description}</p>
+        <div class="detail-content">${item.body || ''}</div>
+      `;
+    }
+
+    loadDetail();
+  </script>
+</body>
+</html>

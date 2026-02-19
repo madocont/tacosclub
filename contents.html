@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contents - タコス倶楽部</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kaisei+HarunoUmi:wght@400;500;700&family=Montserrat:wght@400;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      color: #333;
+      background: #fffaf5;
+      min-height: 100vh;
+    }
+
+    /* Lock Screen */
+    .lock-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .lock-screen.hidden { display: none; }
+
+    .lock-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: #fd6405;
+    }
+
+    .lock-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .lock-form input {
+      width: 240px;
+      padding: 12px 16px;
+      border: 2px solid #eee;
+      border-radius: 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      text-align: center;
+      letter-spacing: 0.1em;
+      transition: border-color 0.2s;
+    }
+
+    .lock-form input:focus {
+      border-color: #fd6405;
+      outline: none;
+    }
+
+    .lock-form input.error {
+      border-color: #e74c3c;
+      animation: shake 0.3s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .lock-form button {
+      padding: 10px 40px;
+      background: #fd6405;
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .lock-form button:hover { background: #e55a04; }
+
+    .lock-hint {
+      font-size: 0.8rem;
+      color: #bbb;
+    }
+
+    .lock-back {
+      font-size: 0.85rem;
+      color: #fd6405;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .lock-back:hover { opacity: 0.7; }
+
+    /* Contents Page */
+    .contents-page { display: none; }
+    .contents-page.visible { display: block; }
+
+    .contents-header {
+      background: #fd6405;
+      color: #fff;
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .contents-header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+    }
+
+    .contents-header a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .contents-header a:hover { opacity: 1; }
+
+    .contents-body {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 20px;
+    }
+
+    .contents-body h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: #333;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .contents-body h2::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: #fd6405;
+      margin: 12px auto 0;
+      border-radius: 2px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .content-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 24px;
+      box-shadow: 0 4px 20px rgba(253, 100, 5, 0.08);
+    }
+
+    .content-card h3 {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #fd6405;
+      margin-bottom: 12px;
+    }
+
+    .content-card h3 a {
+      color: #fd6405;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .content-card h3 a:hover {
+      opacity: 0.7;
+    }
+
+    .content-card p {
+      color: #777;
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+
+    .content-card .tag {
+      display: inline-block;
+      background: #fff5f0;
+      color: #fd6405;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.7rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      background: #fd6405;
+      color: #fff;
+      text-align: center;
+      padding: 32px 20px;
+      margin-top: 40px;
+    }
+
+    footer p {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Lock Screen -->
+  <div class="lock-screen" id="lock-screen">
+    <div class="lock-title">Contents</div>
+    <div class="lock-form">
+      <input type="password" id="passcode-input" placeholder="passcode" autocomplete="off">
+      <button onclick="unlock()">Enter</button>
+    </div>
+    <span class="lock-hint">Members only</span>
+    <a href="index.html" class="lock-back">← Back</a>
+  </div>
+
+  <!-- Contents Page -->
+  <div class="contents-page" id="contents-page">
+    <div class="contents-header">
+      <h1>Contents</h1>
+      <a href="index.html">← Back</a>
+    </div>
+
+    <div class="contents-body">
+      <h2>Members Only</h2>
+      <div class="content-grid" id="content-grid"></div>
+    </div>
+
+    <footer>
+      <p>&copy; 2026 タコス倶楽部 All Rights Reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    const PASSCODE = 'tacos260219';
+
+    // Check if already authenticated
+    if (sessionStorage.getItem('tacos-auth') === 'true') {
+      showContents();
+    }
+
+    // Enter key support
+    document.getElementById('passcode-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') unlock();
+    });
+
+    function unlock() {
+      const input = document.getElementById('passcode-input');
+      if (input.value === PASSCODE) {
+        sessionStorage.setItem('tacos-auth', 'true');
+        showContents();
+      } else {
+        input.classList.add('error');
+        input.value = '';
+        setTimeout(() => input.classList.remove('error'), 400);
+      }
+    }
+
+    function showContents() {
+      document.getElementById('lock-screen').classList.add('hidden');
+      document.getElementById('contents-page').classList.add('visible');
+      loadContents();
+    }
+
+    async function loadContents() {
+      let data;
+      const stored = localStorage.getItem('tacos-club-data');
+      if (stored) {
+        data = JSON.parse(stored);
+      } else {
+        const res = await fetch('data.json');
+        data = await res.json();
+      }
+      const grid = document.getElementById('content-grid');
+      grid.innerHTML = '';
+      (data.contents || []).forEach(c => {
+        grid.innerHTML += `
+          <div class="content-card">
+            <span class="tag">${c.tag}</span>
+            <h3><a href="content-detail.html?id=${c.id}">${c.title}</a></h3>
+            <p>${c.description}</p>
+          </div>`;
+      });
+    }
+  </script>
+</body>
+</html>

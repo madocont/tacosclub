@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>コンテンツ編集 - タコス倶楽部</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kaisei+HarunoUmi:wght@400;500;700&family=Montserrat:wght@800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      color: #333;
+      background: #f5f5f5;
+    }
+
+    .edit-header {
+      background: #fd6405;
+      color: #fff;
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .edit-header h1 {
+      font-family: 'Kaisei HarunoUmi', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .edit-header a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .edit-header a:hover { opacity: 1; }
+
+    .container {
+      max-width: 800px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+
+    .actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .actions-bar h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: #333;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary { background: #fd6405; color: #fff; }
+    .btn-primary:hover { background: #e55a04; }
+    .btn-secondary { background: #e0e0e0; color: #333; }
+    .btn-secondary:hover { background: #ccc; }
+
+    .contents-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .content-edit-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 12px;
+    }
+
+    .field-group input,
+    .field-group textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 2px solid #eee;
+      border-radius: 8px;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    .field-group textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .field-group textarea.body-textarea {
+      min-height: 160px;
+    }
+
+    .field-group input:focus,
+    .field-group textarea:focus {
+      border-color: #fd6405;
+      outline: none;
+    }
+
+    .field-group label {
+      font-size: 0.75rem;
+      color: #999;
+      font-weight: 500;
+    }
+
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      background: #f5f5f5;
+      color: #999;
+    }
+
+    .btn-icon:hover {
+      background: #e74c3c;
+      color: #fff;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #333;
+      color: #fff;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 600px) {
+      .field-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="edit-header">
+    <h1>コンテンツ編集</h1>
+    <a href="index.html">← サイトに戻る</a>
+  </div>
+
+  <div class="container">
+    <div class="actions-bar">
+      <h2>Contents</h2>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-secondary" onclick="addContent()">+ 追加</button>
+        <button class="btn btn-primary" onclick="saveData()">保存する</button>
+      </div>
+    </div>
+    <div class="contents-list" id="contents-list"></div>
+  </div>
+
+  <div class="toast" id="toast">保存しました</div>
+
+  <script>
+    let data = { members: [], news: [], contents: [] };
+
+    async function loadData() {
+      const stored = localStorage.getItem('tacos-club-data');
+      if (stored) {
+        data = JSON.parse(stored);
+      } else {
+        const res = await fetch('data.json');
+        data = await res.json();
+      }
+      if (!data.contents) data.contents = [];
+      renderContents();
+    }
+
+    function renderContents() {
+      const list = document.getElementById('contents-list');
+      list.innerHTML = '';
+      data.contents.forEach((c, i) => {
+        list.innerHTML += `
+          <div class="content-edit-card">
+            <div class="field-group">
+              <div class="field-row">
+                <div>
+                  <label>タグ</label>
+                  <input type="text" value="${c.tag}" placeholder="例: RECIPE"
+                         onchange="updateContent(${i}, 'tag', this.value)">
+                </div>
+                <div>
+                  <label>タイトル</label>
+                  <input type="text" value="${c.title}" placeholder="コンテンツタイトル"
+                         onchange="updateContent(${i}, 'title', this.value)">
+                </div>
+              </div>
+              <label>説明</label>
+              <textarea onchange="updateContent(${i}, 'description', this.value)"
+                        placeholder="コンテンツの説明">${c.description}</textarea>
+              <label>本文</label>
+              <textarea class="body-textarea" onchange="updateContent(${i}, 'body', this.value)"
+                        placeholder="記事の本文">${c.body || ''}</textarea>
+            </div>
+            <button class="btn-icon" onclick="deleteContent(${i})" title="削除">✕</button>
+          </div>`;
+      });
+    }
+
+    function updateContent(index, field, value) {
+      data.contents[index][field] = value;
+    }
+
+    function addContent() {
+      const newId = data.contents.length > 0
+        ? Math.max(...data.contents.map(c => c.id)) + 1
+        : 1;
+      data.contents.push({
+        id: newId,
+        tag: '',
+        title: '',
+        description: '',
+        body: ''
+      });
+      renderContents();
+    }
+
+    function deleteContent(index) {
+      if (confirm(`このコンテンツを削除しますか？`)) {
+        data.contents.splice(index, 1);
+        renderContents();
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem('tacos-club-data', JSON.stringify(data));
+      showToast('保存しました');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

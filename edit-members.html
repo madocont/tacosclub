@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>メンバー編集 - タコス倶楽部</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kaisei+HarunoUmi:wght@400;500;700&family=Montserrat:wght@800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      color: #333;
+      background: #f5f5f5;
+    }
+
+    .edit-header {
+      background: #fd6405;
+      color: #fff;
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .edit-header h1 {
+      font-family: 'Kaisei HarunoUmi', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .edit-header a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .edit-header a:hover { opacity: 1; }
+
+    .container {
+      max-width: 800px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+
+    .actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .actions-bar h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: #333;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary { background: #fd6405; color: #fff; }
+    .btn-primary:hover { background: #e55a04; }
+    .btn-secondary { background: #e0e0e0; color: #333; }
+    .btn-secondary:hover { background: #ccc; }
+
+    .member-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .member-edit-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .avatar-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .avatar-preview {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fd6405 0%, #ff9a44 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid #eee;
+      transition: border-color 0.2s;
+      position: relative;
+    }
+
+    .avatar-preview:hover { border-color: #fd6405; }
+    .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+    .avatar-label {
+      font-size: 0.65rem;
+      color: #999;
+      text-align: center;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-group input,
+    .field-group textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 2px solid #eee;
+      border-radius: 8px;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    .field-group input:focus,
+    .field-group textarea:focus {
+      border-color: #fd6405;
+      outline: none;
+    }
+
+    .field-group textarea { resize: vertical; min-height: 60px; }
+    .field-group label { font-size: 0.75rem; color: #999; font-weight: 500; }
+
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      background: #f5f5f5;
+      color: #999;
+    }
+
+    .btn-icon:hover { background: #e74c3c; color: #fff; }
+
+    .file-input { display: none; }
+
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #333;
+      color: #fff;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 600px) {
+      .member-edit-card { grid-template-columns: 1fr; }
+      .avatar-area { flex-direction: row; }
+      .card-actions { flex-direction: row; justify-content: flex-end; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="edit-header">
+    <h1>メンバー編集</h1>
+    <a href="index.html">← サイトに戻る</a>
+  </div>
+
+  <div class="container">
+    <div class="actions-bar">
+      <h2>Member</h2>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-secondary" onclick="addMember()">+ 追加</button>
+        <button class="btn btn-primary" onclick="saveData()">保存する</button>
+      </div>
+    </div>
+    <div class="member-list" id="member-list"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let data = { members: [], news: [] };
+
+    async function loadData() {
+      const stored = localStorage.getItem('tacos-club-data');
+      if (stored) {
+        data = JSON.parse(stored);
+      } else {
+        const res = await fetch('data.json');
+        data = await res.json();
+      }
+      renderMembers();
+    }
+
+    function renderMembers() {
+      const list = document.getElementById('member-list');
+      list.innerHTML = '';
+      data.members.forEach((m, i) => {
+        const avatarContent = m.image
+          ? `<img src="${m.image}" alt="">`
+          : (m.emoji || '🌮');
+        list.innerHTML += `
+          <div class="member-edit-card">
+            <div class="avatar-area">
+              <div class="avatar-preview" onclick="document.getElementById('file-${i}').click()" title="クリックして画像を選択">
+                ${avatarContent}
+              </div>
+              <input type="file" id="file-${i}" class="file-input" accept="image/*" onchange="handleImage(${i}, this)">
+              <span class="avatar-label">画像を追加</span>
+            </div>
+            <div class="field-group">
+              <label>名前</label>
+              <input type="text" value="${m.name}" onchange="updateMember(${i}, 'name', this.value)">
+              <label>役職</label>
+              <input type="text" value="${m.role}" onchange="updateMember(${i}, 'role', this.value)">
+              <label>紹介文</label>
+              <textarea onchange="updateMember(${i}, 'bio', this.value)">${m.bio}</textarea>
+            </div>
+            <div class="card-actions">
+              <button class="btn-icon" onclick="deleteMember(${i})" title="削除">✕</button>
+            </div>
+          </div>`;
+      });
+    }
+
+    function handleImage(index, input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Resize to 200x200 to keep localStorage small
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          canvas.width = 200;
+          canvas.height = 200;
+          const ctx = canvas.getContext('2d');
+          const size = Math.min(img.width, img.height);
+          const sx = (img.width - size) / 2;
+          const sy = (img.height - size) / 2;
+          ctx.drawImage(img, sx, sy, size, size, 0, 0, 200, 200);
+          data.members[index].image = canvas.toDataURL('image/jpeg', 0.8);
+          renderMembers();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateMember(index, field, value) {
+      data.members[index][field] = value;
+    }
+
+    function addMember() {
+      const newId = data.members.length > 0
+        ? Math.max(...data.members.map(m => m.id)) + 1 : 1;
+      data.members.push({ id: newId, name: '', role: '', bio: '', emoji: '🌮', image: '' });
+      renderMembers();
+    }
+
+    function deleteMember(index) {
+      if (confirm(`「${data.members[index].name || '新規メンバー'}」を削除しますか？`)) {
+        data.members.splice(index, 1);
+        renderMembers();
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem('tacos-club-data', JSON.stringify(data));
+      showToast('保存しました');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
