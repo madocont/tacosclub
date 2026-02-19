@@ -118,14 +118,8 @@
       const params = new URLSearchParams(window.location.search);
       const id = Number(params.get('id'));
 
-      let data;
-      const stored = localStorage.getItem('tacos-club-data');
-      if (stored) {
-        data = JSON.parse(stored);
-      } else {
-        const res = await fetch('data.json');
-        data = await res.json();
-      }
+      const res = await fetch('data.json');
+      const data = await res.json();
 
       const item = (data.contents || []).find(c => c.id === id);
       const body = document.getElementById('detail-body');

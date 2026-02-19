@@ -393,14 +393,8 @@
 
   <script>
     async function loadAndRender() {
-      let data;
-      const stored = localStorage.getItem('tacos-club-data');
-      if (stored) {
-        data = JSON.parse(stored);
-      } else {
-        const res = await fetch('data.json');
-        data = await res.json();
-      }
+      const res = await fetch('data.json');
+      const data = await res.json();
 
       const memberGrid = document.getElementById('member-grid');
       memberGrid.innerHTML = '';

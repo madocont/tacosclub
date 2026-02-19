@@ -209,13 +209,8 @@
     let data = { members: [], news: [], contents: [] };
 
     async function loadData() {
-      const stored = localStorage.getItem('tacos-club-data');
-      if (stored) {
-        data = JSON.parse(stored);
-      } else {
-        const res = await fetch('data.json');
-        data = await res.json();
-      }
+      const res = await fetch('data.json?t=' + Date.now());
+      data = await res.json();
       if (!data.contents) data.contents = [];
       renderContents();
     }
@@ -277,8 +272,14 @@
     }
 
     function saveData() {
-      localStorage.setItem('tacos-club-data', JSON.stringify(data));
-      showToast('保存しました');
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'data.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast('data.json をダウンロードしました。プロジェクトフォルダに上書きしてください。');
     }
 
     function showToast(msg) {
