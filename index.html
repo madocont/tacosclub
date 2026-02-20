@@ -140,6 +140,7 @@
     .member-avatar {
       width: 80px;
       height: 80px;
+      min-height: 80px;
       border-radius: 50%;
       background: linear-gradient(135deg, #fd6405 0%, #ff9a44 100%);
       display: flex;
@@ -148,12 +149,17 @@
       font-size: 36px;
       flex-shrink: 0;
       overflow: hidden;
+      position: relative;
     }
 
     .member-avatar img {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
 
     .member-info {
