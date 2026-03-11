@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理ページ - タコス倶楽部</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kaisei+HarunoUmi:wght@400;500;700&family=Montserrat:wght@400;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      color: #333;
+      background: #f5f5f5;
+      min-height: 100vh;
+    }
+
+    .admin-header {
+      background: #fd6405;
+      color: #fff;
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .admin-header h1 {
+      font-family: 'Kaisei HarunoUmi', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .admin-header a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .admin-header a:hover { opacity: 1; }
+
+    .container {
+      max-width: 600px;
+      margin: 48px auto;
+      padding: 0 20px;
+    }
+
+    .admin-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .admin-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      text-decoration: none;
+      color: #333;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .admin-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(253, 100, 5, 0.12);
+    }
+
+    .admin-card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #fd6405 0%, #ff9a44 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .admin-card-info h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .admin-card-info p {
+      font-size: 0.8rem;
+      color: #999;
+    }
+
+    .admin-card-arrow {
+      margin-left: auto;
+      color: #ccc;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-header">
+    <h1>管理ページ</h1>
+    <a href="index.html">&larr; サイトに戻る</a>
+  </div>
+
+  <div class="container">
+    <div class="admin-grid">
+      <a href="edit-members.html" class="admin-card">
+        <div class="admin-card-icon">👥</div>
+        <div class="admin-card-info">
+          <h3>Member</h3>
+          <p>メンバーの追加・編集・削除</p>
+        </div>
+        <span class="admin-card-arrow">&rsaquo;</span>
+      </a>
+
+      <a href="edit-news.html" class="admin-card">
+        <div class="admin-card-icon">📰</div>
+        <div class="admin-card-info">
+          <h3>News</h3>
+          <p>ニュースの追加・編集・削除</p>
+        </div>
+        <span class="admin-card-arrow">&rsaquo;</span>
+      </a>
+
+      <a href="edit-contents.html" class="admin-card">
+        <div class="admin-card-icon">📝</div>
+        <div class="admin-card-info">
+          <h3>Contents</h3>
+          <p>コンテンツ記事の追加・編集・削除</p>
+        </div>
+        <span class="admin-card-arrow">&rsaquo;</span>
+      </a>
+    </div>
+  </div>
+
+</body>
+</html>

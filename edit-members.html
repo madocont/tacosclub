@@ -197,6 +197,57 @@
       opacity: 1;
     }
 
+    .btn-gear {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+      padding: 4px;
+    }
+    .btn-gear:hover { opacity: 1; }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px;
+      width: 400px;
+      max-width: 90vw;
+    }
+    .modal h3 {
+      font-size: 1rem;
+      margin-bottom: 16px;
+      color: #333;
+    }
+    .modal input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #eee;
+      border-radius: 8px;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+    .modal input:focus { border-color: #fd6405; outline: none; }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
     @media (max-width: 600px) {
       .member-edit-card { grid-template-columns: 1fr; }
       .avatar-area { flex-direction: row; }
@@ -208,7 +259,21 @@
 
   <div class="edit-header">
     <h1>メンバー編集</h1>
-    <a href="index.html">← サイトに戻る</a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a href="index.html">← サイトに戻る</a>
+      <button class="btn-gear" onclick="showTokenModal()" title="GitHub設定">⚙</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="token-modal">
+    <div class="modal">
+      <h3>GitHub Personal Access Token</h3>
+      <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxx">
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeTokenModal()">キャンセル</button>
+        <button class="btn btn-primary" onclick="saveToken()">保存</button>
+      </div>
+    </div>
   </div>
 
   <div class="container">
@@ -306,15 +371,82 @@
       }
     }
 
-    function saveData() {
+    const REPO_OWNER = 'madocont';
+    const REPO_NAME = 'tacosclub';
+    const FILE_PATH = 'data.json';
+
+    function showTokenModal() {
+      const modal = document.getElementById('token-modal');
+      const input = document.getElementById('token-input');
+      input.value = localStorage.getItem('github-token') || '';
+      modal.classList.add('show');
+    }
+
+    function closeTokenModal() {
+      document.getElementById('token-modal').classList.remove('show');
+    }
+
+    function saveToken() {
+      const token = document.getElementById('token-input').value.trim();
+      if (token) {
+        localStorage.setItem('github-token', token);
+        closeTokenModal();
+        showToast('トークンを保存しました');
+      }
+    }
+
+    async function saveData() {
+      const token = localStorage.getItem('github-token');
+      if (!token) {
+        showTokenModal();
+        return;
+      }
+
       const json = JSON.stringify(data, null, 2);
-      const blob = new Blob([json], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'data.json';
-      a.click();
-      URL.revokeObjectURL(a.href);
-      showToast('data.json をダウンロードしました。プロジェクトフォルダに上書きしてください。');
+      const btn = document.querySelector('.btn-primary');
+      btn.textContent = '保存中...';
+      btn.disabled = true;
+
+      try {
+        const getRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+          headers: { 'Authorization': `token ${token}` }
+        });
+
+        if (getRes.status === 401) {
+          localStorage.removeItem('github-token');
+          showToast('トークンが無効です。再設定してください。');
+          showTokenModal();
+          return;
+        }
+
+        const fileData = await getRes.json();
+        const sha = fileData.sha;
+
+        const putRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: 'Update data.json',
+            content: btoa(unescape(encodeURIComponent(json))),
+            sha: sha,
+          })
+        });
+
+        if (putRes.ok) {
+          showToast('保存しました！まもなくサイトに反映されます。');
+        } else {
+          const err = await putRes.json();
+          showToast('保存失敗: ' + (err.message || 'エラーが発生しました'));
+        }
+      } catch (e) {
+        showToast('通信エラー: ' + e.message);
+      } finally {
+        btn.textContent = '保存する';
+        btn.disabled = false;
+      }
     }
 
     function showToast(msg) {

@@ -48,33 +48,15 @@
       padding: 48px 20px;
     }
 
-    .detail-tag {
-      display: inline-block;
-      background: #fff5f0;
-      color: #fd6405;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 800;
-      font-size: 0.75rem;
-      padding: 5px 14px;
-      border-radius: 20px;
-      margin-bottom: 16px;
-    }
-
     .detail-title {
       font-family: 'Zen Kaku Gothic New', sans-serif;
       font-size: 1.8rem;
       font-weight: 700;
       color: #333;
-      margin-bottom: 12px;
-      line-height: 1.5;
-    }
-
-    .detail-description {
-      color: #999;
-      font-size: 0.95rem;
-      margin-bottom: 40px;
+      margin-bottom: 24px;
       padding-bottom: 24px;
       border-bottom: 1px solid #f0e8e0;
+      line-height: 1.5;
     }
 
     .detail-content {
@@ -132,9 +114,7 @@
       document.title = `${item.title} - タコス倶楽部`;
 
       body.innerHTML = `
-        <span class="detail-tag">${item.tag}</span>
         <h2 class="detail-title">${item.title}</h2>
-        <p class="detail-description">${item.description}</p>
         <div class="detail-content">${item.body || ''}</div>
       `;
     }

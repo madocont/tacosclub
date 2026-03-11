@@ -185,23 +185,6 @@
       opacity: 0.7;
     }
 
-    .content-card p {
-      color: #777;
-      font-size: 0.9rem;
-      line-height: 1.8;
-    }
-
-    .content-card .tag {
-      display: inline-block;
-      background: #fff5f0;
-      color: #fd6405;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 800;
-      font-size: 0.7rem;
-      padding: 4px 10px;
-      border-radius: 20px;
-      margin-bottom: 10px;
-    }
 
     footer {
       background: #fd6405;
@@ -286,9 +269,7 @@
       (data.contents || []).forEach(c => {
         grid.innerHTML += `
           <div class="content-card">
-            <span class="tag">${c.tag}</span>
             <h3><a href="content-detail.html?id=${c.id}">${c.title}</a></h3>
-            <p>${c.description}</p>
           </div>`;
       });
     }
