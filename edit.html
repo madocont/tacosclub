@@ -478,7 +478,8 @@
 
     function markDirty() {
       dirty = true;
-      document.getElementById('unsaved-badge').classList.add('show');
+      const badge = document.getElementById('unsaved-badge');
+      if (badge) badge.classList.add('show');
     }
 
     // ---- Load data ----
@@ -732,7 +733,8 @@
 
         if (putRes.ok) {
           dirty = false;
-          document.getElementById('unsaved-badge').classList.remove('show');
+          const badge = document.getElementById('unsaved-badge');
+          if (badge) badge.classList.remove('show');
           showToast('保存しました！まもなくサイトに反映されます。');
         } else {
           const err = await putRes.json();
