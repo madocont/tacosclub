@@ -400,7 +400,7 @@
 
   <script>
     async function loadAndRender() {
-      const res = await fetch('data.json');
+      const res = await fetch('data.json?t=' + Date.now());
       const data = await res.json();
 
       const memberGrid = document.getElementById('member-grid');
