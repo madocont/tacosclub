@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>編集 - タコス倶楽部</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kaisei+HarunoUmi:wght@400;500;700&family=Montserrat:wght@400;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      color: #333;
+      background: #f5f5f5;
+    }
+
+    /* Header */
+    .edit-header {
+      background: #fd6405;
+      color: #fff;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .edit-header h1 {
+      font-family: 'Kaisei HarunoUmi', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-actions a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .header-actions a:hover { opacity: 1; }
+
+    .btn-gear {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+      padding: 4px;
+    }
+
+    .btn-gear:hover { opacity: 1; }
+
+    /* Tabs */
+    .tab-bar {
+      display: flex;
+      background: #fff;
+      border-bottom: 2px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 16px 20px;
+      border: none;
+      background: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #999;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-btn:hover { color: #666; }
+
+    .tab-btn.active {
+      color: #fd6405;
+      border-bottom-color: #fd6405;
+    }
+
+    .tab-btn .tab-count {
+      display: inline-block;
+      background: #eee;
+      color: #999;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 6px;
+    }
+
+    .tab-btn.active .tab-count {
+      background: #fff3eb;
+      color: #fd6405;
+    }
+
+    /* Container */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px 20px 120px;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Section header */
+    .section-header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary { background: #fd6405; color: #fff; }
+    .btn-primary:hover { background: #e55a04; }
+    .btn-secondary { background: #e0e0e0; color: #333; }
+    .btn-secondary:hover { background: #ccc; }
+    .btn-danger { background: #fff; color: #e74c3c; border: 1px solid #e74c3c; }
+    .btn-danger:hover { background: #e74c3c; color: #fff; }
+
+    .btn-add {
+      background: #fff;
+      border: 2px dashed #ccc;
+      border-radius: 12px;
+      padding: 20px;
+      width: 100%;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.95rem;
+      color: #999;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-add:hover { border-color: #fd6405; color: #fd6405; }
+
+    /* Cards */
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .edit-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .card-number {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.7rem;
+      color: #fd6405;
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      background: #f5f5f5;
+      color: #999;
+    }
+
+    .btn-icon:hover { background: #e74c3c; color: #fff; }
+
+    /* Member card */
+    .member-row {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .avatar-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .avatar-preview {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fd6405 0%, #ff9a44 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid #eee;
+      transition: border-color 0.2s;
+      position: relative;
+    }
+
+    .avatar-preview:hover { border-color: #fd6405; }
+    .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+    .avatar-label {
+      font-size: 0.6rem;
+      color: #bbb;
+    }
+
+    .file-input { display: none; }
+
+    /* Fields */
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field label {
+      font-size: 0.7rem;
+      color: #999;
+      font-weight: 500;
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 2px solid #eee;
+      border-radius: 8px;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      border-color: #fd6405;
+      outline: none;
+    }
+
+    .field textarea { resize: vertical; min-height: 60px; }
+    .field textarea.body-textarea { min-height: 140px; }
+
+    /* Floating save bar */
+    .save-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-top: 1px solid #eee;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      z-index: 200;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+    }
+
+    .save-bar .btn {
+      padding: 12px 48px;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .unsaved-badge {
+      display: none;
+      background: #e74c3c;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 8px;
+    }
+
+    .unsaved-badge.show { display: inline-block; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px;
+      width: 400px;
+      max-width: 90vw;
+    }
+
+    .modal h3 { font-size: 1rem; margin-bottom: 16px; color: #333; }
+
+    .modal input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #eee;
+      border-radius: 8px;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+
+    .modal input:focus { border-color: #fd6405; outline: none; }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #333;
+      color: #fff;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .member-row { flex-direction: column; }
+      .avatar-area { flex-direction: row; gap: 12px; }
+      .field-row { grid-template-columns: 1fr; }
+      .edit-header { padding: 16px 20px; }
+      .edit-header h1 { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="edit-header">
+    <h1>タコス倶楽部 編集</h1>
+    <div class="header-actions">
+      <a href="index.html">← サイトを見る</a>
+      <button class="btn-gear" onclick="showTokenModal()" title="GitHub設定">&#9881;</button>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('members')">
+      Member<span class="tab-count" id="count-members">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('news')">
+      News<span class="tab-count" id="count-news">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('contents')">
+      Contents<span class="tab-count" id="count-contents">0</span>
+    </button>
+  </div>
+
+  <div class="container">
+    <!-- Members -->
+    <div class="tab-panel active" id="panel-members">
+      <div class="card-list" id="member-list"></div>
+      <button class="btn-add" onclick="addMember()" style="margin-top:16px">+ メンバーを追加</button>
+    </div>
+
+    <!-- News -->
+    <div class="tab-panel" id="panel-news">
+      <div class="card-list" id="news-list"></div>
+      <button class="btn-add" onclick="addNews()" style="margin-top:16px">+ ニュースを追加</button>
+    </div>
+
+    <!-- Contents -->
+    <div class="tab-panel" id="panel-contents">
+      <div class="card-list" id="contents-list"></div>
+      <button class="btn-add" onclick="addContent()" style="margin-top:16px">+ コンテンツを追加</button>
+    </div>
+  </div>
+
+  <div class="save-bar">
+    <button class="btn btn-primary" id="save-btn" onclick="saveData()">
+      保存する<span class="unsaved-badge" id="unsaved-badge">未保存</span>
+    </button>
+  </div>
+
+  <div class="modal-overlay" id="token-modal">
+    <div class="modal">
+      <h3>GitHub Personal Access Token</h3>
+      <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxx">
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeTokenModal()">キャンセル</button>
+        <button class="btn btn-primary" onclick="saveToken()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let data = { members: [], news: [], contents: [] };
+    let dirty = false;
+
+    // ---- Tab switching ----
+    function switchTab(name) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelector(`[onclick="switchTab('${name}')"]`).classList.add('active');
+      document.getElementById('panel-' + name).classList.add('active');
+    }
+
+    function updateCounts() {
+      document.getElementById('count-members').textContent = data.members.length;
+      document.getElementById('count-news').textContent = data.news.length;
+      document.getElementById('count-contents').textContent = (data.contents || []).length;
+    }
+
+    function markDirty() {
+      dirty = true;
+      document.getElementById('unsaved-badge').classList.add('show');
+    }
+
+    // ---- Load data ----
+    async function loadData() {
+      const res = await fetch('data.json?t=' + Date.now());
+      data = await res.json();
+      if (!data.contents) data.contents = [];
+      if (!data.news) data.news = [];
+      renderAll();
+    }
+
+    function renderAll() {
+      renderMembers();
+      renderNews();
+      renderContents();
+      updateCounts();
+    }
+
+    // ---- Members ----
+    function renderMembers() {
+      const list = document.getElementById('member-list');
+      list.innerHTML = '';
+      data.members.forEach((m, i) => {
+        const num = String(i + 1).padStart(2, '0');
+        const avatarContent = m.image
+          ? `<img src="${escHtml(m.image)}" alt="">`
+          : (m.emoji || '&#127790;');
+        list.innerHTML += `
+          <div class="edit-card">
+            <div class="card-header">
+              <span class="card-number">No.${num}</span>
+              <button class="btn-icon" onclick="deleteMember(${i})" title="削除">&#10005;</button>
+            </div>
+            <div class="member-row">
+              <div class="avatar-area">
+                <div class="avatar-preview" onclick="document.getElementById('file-${i}').click()" title="クリックして画像を選択">
+                  ${avatarContent}
+                </div>
+                <input type="file" id="file-${i}" class="file-input" accept="image/*" onchange="handleImage(${i}, this)">
+                <span class="avatar-label">画像変更</span>
+              </div>
+              <div class="field-group">
+                <div class="field-row">
+                  <div class="field">
+                    <label>名前</label>
+                    <input type="text" value="${escHtml(m.name)}" oninput="updateMember(${i}, 'name', this.value)">
+                  </div>
+                  <div class="field">
+                    <label>役職</label>
+                    <input type="text" value="${escHtml(m.role)}" oninput="updateMember(${i}, 'role', this.value)">
+                  </div>
+                </div>
+                <div class="field">
+                  <label>紹介文</label>
+                  <textarea oninput="updateMember(${i}, 'bio', this.value)">${escHtml(m.bio)}</textarea>
+                </div>
+              </div>
+            </div>
+          </div>`;
+      });
+    }
+
+    function updateMember(i, field, value) {
+      data.members[i][field] = value;
+      markDirty();
+    }
+
+    function addMember() {
+      const newId = data.members.length > 0 ? Math.max(...data.members.map(m => m.id)) + 1 : 1;
+      data.members.push({ id: newId, name: '', role: '', bio: '', emoji: '🌮', image: '' });
+      renderMembers();
+      updateCounts();
+      markDirty();
+    }
+
+    function deleteMember(i) {
+      if (confirm(`「${data.members[i].name || '新規メンバー'}」を削除しますか？`)) {
+        data.members.splice(i, 1);
+        renderMembers();
+        updateCounts();
+        markDirty();
+      }
+    }
+
+    function handleImage(index, input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          canvas.width = 200;
+          canvas.height = 200;
+          const ctx = canvas.getContext('2d');
+          const size = Math.min(img.width, img.height);
+          const sx = (img.width - size) / 2;
+          const sy = (img.height - size) / 2;
+          ctx.drawImage(img, sx, sy, size, size, 0, 0, 200, 200);
+          data.members[index].image = canvas.toDataURL('image/jpeg', 0.8);
+          renderMembers();
+          markDirty();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ---- News ----
+    function renderNews() {
+      const list = document.getElementById('news-list');
+      list.innerHTML = '';
+      data.news.forEach((n, i) => {
+        list.innerHTML += `
+          <div class="edit-card">
+            <div class="card-header">
+              <span class="card-number">NEWS #${i + 1}</span>
+              <button class="btn-icon" onclick="deleteNews(${i})" title="削除">&#10005;</button>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>日付</label>
+                <input type="text" value="${escHtml(n.date)}" placeholder="例: 4月12日（土）"
+                       oninput="updateNews(${i}, 'date', this.value)">
+              </div>
+              <div class="field">
+                <label>内容</label>
+                <input type="text" value="${escHtml(n.event)}" placeholder="イベント名・内容"
+                       oninput="updateNews(${i}, 'event', this.value)">
+              </div>
+            </div>
+          </div>`;
+      });
+    }
+
+    function updateNews(i, field, value) {
+      data.news[i][field] = value;
+      markDirty();
+    }
+
+    function addNews() {
+      const newId = data.news.length > 0 ? Math.max(...data.news.map(n => n.id)) + 1 : 1;
+      data.news.push({ id: newId, date: '', event: '' });
+      renderNews();
+      updateCounts();
+      markDirty();
+    }
+
+    function deleteNews(i) {
+      if (confirm('このニュースを削除しますか？')) {
+        data.news.splice(i, 1);
+        renderNews();
+        updateCounts();
+        markDirty();
+      }
+    }
+
+    // ---- Contents ----
+    function renderContents() {
+      const list = document.getElementById('contents-list');
+      list.innerHTML = '';
+      data.contents.forEach((c, i) => {
+        list.innerHTML += `
+          <div class="edit-card">
+            <div class="card-header">
+              <span class="card-number">CONTENT #${i + 1}</span>
+              <button class="btn-icon" onclick="deleteContent(${i})" title="削除">&#10005;</button>
+            </div>
+            <div class="field-group">
+              <div class="field">
+                <label>タイトル</label>
+                <input type="text" value="${escHtml(c.title)}" placeholder="コンテンツタイトル"
+                       oninput="updateContent(${i}, 'title', this.value)">
+              </div>
+              <div class="field">
+                <label>本文</label>
+                <textarea class="body-textarea" oninput="updateContent(${i}, 'body', this.value)"
+                          placeholder="記事の本文">${escHtml(c.body || '')}</textarea>
+              </div>
+            </div>
+          </div>`;
+      });
+    }
+
+    function updateContent(i, field, value) {
+      data.contents[i][field] = value;
+      markDirty();
+    }
+
+    function addContent() {
+      const newId = data.contents.length > 0 ? Math.max(...data.contents.map(c => c.id)) + 1 : 1;
+      data.contents.push({ id: newId, title: '', body: '' });
+      renderContents();
+      updateCounts();
+      markDirty();
+    }
+
+    function deleteContent(i) {
+      if (confirm('このコンテンツを削除しますか？')) {
+        data.contents.splice(i, 1);
+        renderContents();
+        updateCounts();
+        markDirty();
+      }
+    }
+
+    // ---- Save via GitHub API ----
+    const REPO_OWNER = 'madocont';
+    const REPO_NAME = 'tacosclub';
+    const FILE_PATH = 'data.json';
+
+    async function saveData() {
+      const token = localStorage.getItem('github-token');
+      if (!token) {
+        showTokenModal();
+        return;
+      }
+
+      const json = JSON.stringify(data, null, 2);
+      const btn = document.getElementById('save-btn');
+      btn.textContent = '保存中...';
+      btn.disabled = true;
+
+      try {
+        const getRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+          headers: { 'Authorization': `token ${token}` }
+        });
+
+        if (getRes.status === 401) {
+          localStorage.removeItem('github-token');
+          showToast('トークンが無効です。再設定してください。');
+          showTokenModal();
+          return;
+        }
+
+        const fileData = await getRes.json();
+        const sha = fileData.sha;
+
+        const putRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: 'Update data.json',
+            content: btoa(unescape(encodeURIComponent(json))),
+            sha: sha,
+          })
+        });
+
+        if (putRes.ok) {
+          dirty = false;
+          document.getElementById('unsaved-badge').classList.remove('show');
+          showToast('保存しました！まもなくサイトに反映されます。');
+        } else {
+          const err = await putRes.json();
+          showToast('保存失敗: ' + (err.message || 'エラーが発生しました'));
+        }
+      } catch (e) {
+        showToast('通信エラー: ' + e.message);
+      } finally {
+        btn.innerHTML = '保存する<span class="unsaved-badge' + (dirty ? ' show' : '') + '" id="unsaved-badge">未保存</span>';
+        btn.disabled = false;
+      }
+    }
+
+    // ---- Token modal ----
+    function showTokenModal() {
+      const input = document.getElementById('token-input');
+      input.value = localStorage.getItem('github-token') || '';
+      document.getElementById('token-modal').classList.add('show');
+    }
+
+    function closeTokenModal() {
+      document.getElementById('token-modal').classList.remove('show');
+    }
+
+    function saveToken() {
+      const token = document.getElementById('token-input').value.trim();
+      if (token) {
+        localStorage.setItem('github-token', token);
+        closeTokenModal();
+        showToast('トークンを保存しました');
+      }
+    }
+
+    // ---- Toast ----
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // ---- Util ----
+    function escHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // ---- Unsaved warning ----
+    window.addEventListener('beforeunload', function(e) {
+      if (dirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    });
+
+    // ---- Init ----
+    loadData();
+  </script>
+</body>
+</html>
