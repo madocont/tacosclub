@@ -83,6 +83,30 @@
       "bio": "",
       "emoji": "🌮",
       "image": ""
+    },
+    {
+      "id": 11,
+      "name": "Kaito",
+      "number": "",
+      "bio": "亀岡の若手石細工職人",
+      "emoji": "🌮",
+      "image": ""
+    },
+    {
+      "id": 12,
+      "name": "Shingo",
+      "number": "",
+      "bio": "京都の伝統工芸のドン",
+      "emoji": "🌮",
+      "image": ""
+    },
+    {
+      "id": 13,
+      "name": "オギユカ",
+      "number": "",
+      "bio": "京都在住のライター",
+      "emoji": "🌮",
+      "image": ""
     }
   ],
   "news": [
