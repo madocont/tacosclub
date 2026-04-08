@@ -4,31 +4,59 @@
       "id": 1,
       "name": "YUKA",
       "role": "",
-      "bio": "倶楽部",
+      "bio": "タコス倶楽部創設",
       "emoji": "🌮",
-      "image": "images/member-1.jpg"
+      "image": "images/member-1.jpg",
+      "number": "00"
     },
     {
       "id": 2,
       "name": "Anna",
       "role": "",
-      "bio": "",
+      "bio": "メキシコ仲間",
       "emoji": "🌮",
-      "image": ""
+      "image": "",
+      "number": "01"
     },
     {
       "id": 3,
       "name": "Ayaka",
       "role": "",
-      "bio": "",
+      "bio": "オアハカの先住民族とブランドSomaruを運営",
       "emoji": "🌮",
-      "image": ""
+      "image": "",
+      "number": "03"
     },
     {
       "id": 4,
       "name": "Yuki",
       "role": "",
       "bio": "マブダチ",
+      "emoji": "🌮",
+      "image": "",
+      "number": "04"
+    },
+    {
+      "id": 5,
+      "name": "Ruriko",
+      "number": "05",
+      "bio": "14年目の仲",
+      "emoji": "🌮",
+      "image": ""
+    },
+    {
+      "id": 6,
+      "name": "Kaito",
+      "number": "11",
+      "bio": "亀岡の若手石工職人さん",
+      "emoji": "🌮",
+      "image": ""
+    },
+    {
+      "id": 7,
+      "name": "Shingo",
+      "number": "12",
+      "bio": "京都の伝統工芸のドン",
       "emoji": "🌮",
       "image": ""
     }
