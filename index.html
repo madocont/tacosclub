@@ -409,6 +409,11 @@
 
       const memberGrid = document.getElementById('member-grid');
       memberGrid.innerHTML = '';
+      data.members.sort((a, b) => {
+        const numA = parseInt(a.number || '999', 10);
+        const numB = parseInt(b.number || '999', 10);
+        return numA - numB;
+      });
       data.members.forEach((m, i) => {
         const num = m.number || String(i + 1).padStart(2, '0');
         const avatarContent = m.image
