@@ -2,54 +2,82 @@
   "members": [
     {
       "id": 1,
-      "name": "YUKA",
+      "name": "Yuka",
       "role": "",
-      "bio": "倶楽部",
+      "bio": "倶楽部創設",
       "emoji": "🌮",
-      "image": "images/member-1.jpg"
+      "image": "images/member-1.jpg",
+      "number": "00"
     },
     {
       "id": 2,
       "name": "Anna",
       "role": "",
-      "bio": "",
+      "bio": "メキシコ仲間",
       "emoji": "🌮",
-      "image": ""
+      "image": "",
+      "number": "01"
     },
     {
       "id": 3,
       "name": "Ayaka",
       "role": "",
-      "bio": "",
+      "bio": "オアハカ先住民族とブランドsomaru運営",
       "emoji": "🌮",
-      "image": ""
+      "image": "",
+      "number": "02"
     },
     {
       "id": 4,
-      "name": "Yuki",
+      "name": "Ruriko",
       "role": "",
-      "bio": "マブダチ",
+      "bio": "14年目の仲",
       "emoji": "🌮",
-      "image": ""
+      "image": "",
+      "number": "03"
     },
     {
       "id": 5,
-      "name": "Ruriko",
-      "number": "",
-      "bio": "14年目の仲",
+      "name": "Yuki",
+      "number": "04",
+      "bio": "マブダチ",
       "emoji": "🌮",
       "image": ""
     },
     {
       "id": 6,
       "name": "Miguel",
-      "number": "",
+      "number": "05",
       "bio": "大使館時代の最高な上司",
       "emoji": "🌮",
       "image": ""
     },
     {
       "id": 7,
+      "name": "Ivan",
+      "number": "06",
+      "bio": "パスポートのことならお任せ。",
+      "emoji": "🌮",
+      "image": ""
+    },
+    {
+      "id": 8,
+      "name": "Saray",
+      "number": "",
+      "bio": "日本語ペラペラなメキシコの女の子。",
+      "emoji": "🌮",
+      "image": ""
+    },
+    {
+      "id": 9,
+      "name": "Oscar",
+      "number": "",
+      "bio": "登録者1000万人越えのバケモノYoutuber",
+      "emoji": "🌮",
+      "image": ""
+    },
+    {
+      "id": 10,
       "name": "",
       "number": "",
       "bio": "",
