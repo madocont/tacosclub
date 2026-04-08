@@ -4,28 +4,25 @@
       "id": 1,
       "name": "YUKA",
       "role": "",
-      "bio": "タコス倶楽部創設",
+      "bio": "倶楽部",
       "emoji": "🌮",
-      "image": "images/member-1.jpg",
-      "number": "00"
+      "image": "images/member-1.jpg"
     },
     {
       "id": 2,
       "name": "Anna",
       "role": "",
-      "bio": "メキシコ仲間",
+      "bio": "",
       "emoji": "🌮",
-      "image": "",
-      "number": "01"
+      "image": ""
     },
     {
       "id": 3,
       "name": "Ayaka",
       "role": "",
-      "bio": "オアハカの先住民族とブランドSomaruを運営",
+      "bio": "",
       "emoji": "🌮",
-      "image": "",
-      "number": "03"
+      "image": ""
     },
     {
       "id": 4,
@@ -33,30 +30,21 @@
       "role": "",
       "bio": "マブダチ",
       "emoji": "🌮",
-      "image": "",
-      "number": "04"
+      "image": ""
     },
     {
       "id": 5,
       "name": "Ruriko",
-      "number": "05",
+      "number": "",
       "bio": "14年目の仲",
       "emoji": "🌮",
       "image": ""
     },
     {
       "id": 6,
-      "name": "Kaito",
-      "number": "11",
-      "bio": "亀岡の若手石工職人さん",
-      "emoji": "🌮",
-      "image": ""
-    },
-    {
-      "id": 7,
-      "name": "Shingo",
-      "number": "12",
-      "bio": "京都の伝統工芸のドン",
+      "name": "Miguel",
+      "number": "",
+      "bio": "大使館時代の最高な上司",
       "emoji": "🌮",
       "image": ""
     }
