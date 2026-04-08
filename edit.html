@@ -440,9 +440,8 @@
   </div>
 
   <div class="save-bar">
-    <button class="btn btn-primary" id="save-btn" onclick="saveData()">
-      保存する<span class="unsaved-badge" id="unsaved-badge">未保存</span>
-    </button>
+    <button class="btn btn-primary" id="save-btn" onclick="saveData()">保存する</button>
+    <span class="unsaved-badge" id="unsaved-badge">未保存</span>
   </div>
 
   <div class="modal-overlay" id="token-modal">
@@ -743,7 +742,7 @@
       } catch (e) {
         showToast('通信エラー: ' + e.message);
       } finally {
-        btn.innerHTML = '保存する<span class="unsaved-badge' + (dirty ? ' show' : '') + '" id="unsaved-badge">未保存</span>';
+        btn.textContent = '保存する';
         btn.disabled = false;
       }
     }
