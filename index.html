@@ -6,7 +6,7 @@
   <title>タコス倶楽部</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kaisei+HarunoUmi:wght@400;500;700&family=Montserrat:wght@400;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Montserrat:wght@400;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -21,7 +21,7 @@
     }
 
     h1, h2, h3, nav a, .contact-btn {
-      font-family: 'Kaisei HarunoUmi', serif;
+      font-family: 'Noto Serif JP', serif;
     }
 
     /* Header */
@@ -29,7 +29,7 @@
       background: #fd6405;
       color: #fff;
       text-align: center;
-      padding: 60px 20px 40px;
+      padding: 80px 20px 60px;
       position: relative;
       overflow: hidden;
     }
@@ -45,19 +45,30 @@
       border-radius: 50% 50% 0 0;
     }
 
+    header .title-sub {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 900;
+      font-size: 2.5rem;
+      letter-spacing: 0.5em;
+      color: #000;
+      margin-bottom: 0;
+    }
+
     header h1 {
-      font-size: 2.8rem;
-      font-weight: 700;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 5rem;
+      font-weight: 900;
       letter-spacing: 0.1em;
-      margin-bottom: 8px;
-      color: #333;
+      margin-bottom: 16px;
+      color: #000;
+      line-height: 1.1;
     }
 
     header p {
       font-family: 'Montserrat', sans-serif;
       font-weight: 800;
       font-size: 1.1rem;
-      opacity: 0.9;
+      color: #fff;
       letter-spacing: 0.05em;
     }
 
@@ -323,8 +334,12 @@
 
     /* Responsive */
     @media (max-width: 600px) {
+      header .title-sub {
+        font-size: 1.5rem;
+      }
+
       header h1 {
-        font-size: 2rem;
+        font-size: 3rem;
       }
 
       nav {
@@ -351,8 +366,9 @@
 <body>
 
   <header>
-    <h1>タコス倶楽部</h1>
-    <p>For Tacos lovers, by tacos lovers</p>
+    <div class="title-sub">タ コ ス</div>
+    <h1>倶楽部</h1>
+    <p>No. ___</p>
   </header>
 
   <nav>
