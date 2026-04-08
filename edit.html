@@ -527,8 +527,8 @@
                     <input type="text" value="${escHtml(m.name)}" oninput="updateMember(${i}, 'name', this.value)">
                   </div>
                   <div class="field">
-                    <label>役職</label>
-                    <input type="text" value="${escHtml(m.role)}" oninput="updateMember(${i}, 'role', this.value)">
+                    <label>会員番号</label>
+                    <input type="text" value="${escHtml(m.number || '')}" placeholder="例: 01" oninput="updateMember(${i}, 'number', this.value)">
                   </div>
                 </div>
                 <div class="field">
@@ -548,7 +548,7 @@
 
     function addMember() {
       const newId = data.members.length > 0 ? Math.max(...data.members.map(m => m.id)) + 1 : 1;
-      data.members.push({ id: newId, name: '', role: '', bio: '', emoji: '🌮', image: '' });
+      data.members.push({ id: newId, name: '', number: '', bio: '', emoji: '🌮', image: '' });
       renderMembers();
       updateCounts();
       markDirty();
