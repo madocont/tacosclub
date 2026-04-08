@@ -7,6 +7,14 @@
       "bio": "倶楽部",
       "emoji": "🌮",
       "image": "images/member-1.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Anna",
+      "role": "",
+      "bio": "",
+      "emoji": "🌮",
+      "image": ""
     }
   ],
   "news": [],
