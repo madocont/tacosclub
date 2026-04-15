@@ -232,9 +232,9 @@
 <body>
 
   <div class="edit-header">
-    <h1>コンテンツ編集</h1>
+    <h1 id="page-title">コンテンツ編集</h1>
     <div style="display:flex;align-items:center;gap:12px;">
-      <a href="index.html">← サイトに戻る</a>
+      <a id="back-link" href="contents.html">← 戻る</a>
       <button class="btn-gear" onclick="showTokenModal()" title="GitHub設定">⚙</button>
     </div>
   </div>
@@ -274,22 +274,38 @@
     }
 
     const CATEGORIES = ['サルサ', 'トルティージャ', '種類', 'タコスパーティー'];
+    const CURRENT_CAT = (() => {
+      const c = new URLSearchParams(location.search).get('cat');
+      return CATEGORIES.includes(c) ? c : null;
+    })();
+
+    if (CURRENT_CAT) {
+      document.getElementById('page-title').textContent = `${CURRENT_CAT} 編集`;
+      document.getElementById('back-link').href = `contents.html?cat=${encodeURIComponent(CURRENT_CAT)}`;
+    }
 
     function renderContents() {
       const list = document.getElementById('contents-list');
       list.innerHTML = '';
-      data.contents.forEach((c, i) => {
-        const opts = CATEGORIES.map(cat =>
-          `<option value="${cat}"${c.category === cat ? ' selected' : ''}>${cat}</option>`
-        ).join('');
-        list.innerHTML += `
-          <div class="content-edit-card">
-            <div class="field-group">
+      const visible = CURRENT_CAT
+        ? data.contents.map((c, i) => ({ c, i })).filter(x => x.c.category === CURRENT_CAT)
+        : data.contents.map((c, i) => ({ c, i }));
+      visible.forEach(({ c, i }) => {
+        const categoryField = CURRENT_CAT ? '' : (() => {
+          const opts = CATEGORIES.map(cat =>
+            `<option value="${cat}"${c.category === cat ? ' selected' : ''}>${cat}</option>`
+          ).join('');
+          return `
               <label>カテゴリ</label>
               <select onchange="updateContent(${i}, 'category', this.value)">
                 <option value=""${!c.category ? ' selected' : ''}>（未分類）</option>
                 ${opts}
-              </select>
+              </select>`;
+        })();
+        list.innerHTML += `
+          <div class="content-edit-card">
+            <div class="field-group">
+              ${categoryField}
               <label>タイトル</label>
               <input type="text" value="${c.title}" placeholder="コンテンツタイトル"
                      onchange="updateContent(${i}, 'title', this.value)">
@@ -312,7 +328,7 @@
         : 1;
       data.contents.push({
         id: newId,
-        category: 'サルサ',
+        category: CURRENT_CAT || 'サルサ',
         title: '',
         body: ''
       });

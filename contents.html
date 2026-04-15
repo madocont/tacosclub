@@ -298,7 +298,7 @@
 
     <footer>
       <p>&copy; 2026 タコス倶楽部 All Rights Reserved.</p>
-      <a href="edit-contents.html" style="display:inline-block;margin-top:8px;color:#fff;opacity:0.5;font-size:0.75rem;text-decoration:none;">編集</a>
+      <a id="footer-edit" href="edit-contents.html" style="display:inline-block;margin-top:8px;color:#fff;opacity:0.5;font-size:0.75rem;text-decoration:none;">編集</a>
     </footer>
   </div>
 
@@ -357,6 +357,8 @@
             <a href="contents.html" class="category-back">← カテゴリ一覧</a>
           </div>
           ${cards}`;
+        const editLink = document.getElementById('footer-edit');
+        if (editLink) editLink.href = `edit-contents.html?cat=${encodeURIComponent(selected)}`;
       } else {
         container.innerHTML = `<div class="category-buttons">${
           CATEGORIES.map(cat =>
