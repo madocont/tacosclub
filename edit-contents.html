@@ -102,6 +102,7 @@
       gap: 8px;
     }
 
+    .field-group select,
     .field-group input,
     .field-group textarea {
       width: 100%;
@@ -122,6 +123,7 @@
       min-height: 160px;
     }
 
+    .field-group select:focus,
     .field-group input:focus,
     .field-group textarea:focus {
       border-color: #fd6405;
@@ -271,13 +273,23 @@
       renderContents();
     }
 
+    const CATEGORIES = ['サルサ', 'トルティージャ', '種類', 'タコスパーティー'];
+
     function renderContents() {
       const list = document.getElementById('contents-list');
       list.innerHTML = '';
       data.contents.forEach((c, i) => {
+        const opts = CATEGORIES.map(cat =>
+          `<option value="${cat}"${c.category === cat ? ' selected' : ''}>${cat}</option>`
+        ).join('');
         list.innerHTML += `
           <div class="content-edit-card">
             <div class="field-group">
+              <label>カテゴリ</label>
+              <select onchange="updateContent(${i}, 'category', this.value)">
+                <option value=""${!c.category ? ' selected' : ''}>（未分類）</option>
+                ${opts}
+              </select>
               <label>タイトル</label>
               <input type="text" value="${c.title}" placeholder="コンテンツタイトル"
                      onchange="updateContent(${i}, 'title', this.value)">
@@ -300,6 +312,7 @@
         : 1;
       data.contents.push({
         id: newId,
+        category: 'サルサ',
         title: '',
         body: ''
       });

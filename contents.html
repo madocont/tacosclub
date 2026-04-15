@@ -156,6 +156,26 @@
       border-radius: 2px;
     }
 
+    .category-section {
+      margin-bottom: 48px;
+    }
+
+    .category-title {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #333;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #fd6405;
+    }
+
+    .category-empty {
+      font-size: 0.85rem;
+      color: #bbb;
+      padding: 8px 0;
+    }
+
     .content-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -224,7 +244,7 @@
 
     <div class="contents-body">
       <h2>Members Only</h2>
-      <div class="content-grid" id="content-grid"></div>
+      <div id="categories-container"></div>
     </div>
 
     <footer>
@@ -264,16 +284,27 @@
       loadContents();
     }
 
+    const CATEGORIES = ['サルサ', 'トルティージャ', '種類', 'タコスパーティー'];
+
     async function loadContents() {
-      const res = await fetch('data.json');
+      const res = await fetch('data.json?t=' + Date.now());
       const data = await res.json();
-      const grid = document.getElementById('content-grid');
-      grid.innerHTML = '';
-      (data.contents || []).forEach(c => {
-        grid.innerHTML += `
-          <div class="content-card">
-            <h3><a href="content-detail.html?id=${c.id}">${c.title}</a></h3>
-          </div>`;
+      const container = document.getElementById('categories-container');
+      container.innerHTML = '';
+      const contents = data.contents || [];
+      CATEGORIES.forEach(cat => {
+        const items = contents.filter(c => c.category === cat);
+        const cards = items.length
+          ? `<div class="content-grid">${items.map(c => `
+              <div class="content-card">
+                <h3><a href="content-detail.html?id=${c.id}">${c.title}</a></h3>
+              </div>`).join('')}</div>`
+          : `<div class="category-empty">記事はまだありません</div>`;
+        container.innerHTML += `
+          <section class="category-section">
+            <h3 class="category-title">${cat}</h3>
+            ${cards}
+          </section>`;
       });
     }
   </script>
