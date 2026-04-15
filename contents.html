@@ -156,24 +156,73 @@
       border-radius: 2px;
     }
 
-    .category-section {
-      margin-bottom: 48px;
+    .category-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
     }
 
-    .category-title {
+    .category-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 40px 20px;
+      background: #fd6405;
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      text-decoration: none;
       font-family: 'Zen Kaku Gothic New', sans-serif;
       font-weight: 700;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(253, 100, 5, 0.2);
+      transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+    }
+
+    .category-btn:hover {
+      background: #e55a04;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(253, 100, 5, 0.3);
+    }
+
+    .category-btn .count {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 400;
+      opacity: 0.85;
+    }
+
+    .category-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .category-heading h3 {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
       color: #333;
-      margin-bottom: 16px;
       padding-bottom: 8px;
       border-bottom: 2px solid #fd6405;
     }
 
+    .category-back {
+      color: #fd6405;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .category-back:hover { opacity: 0.7; }
+
     .category-empty {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: #bbb;
-      padding: 8px 0;
+      text-align: center;
+      padding: 40px 0;
     }
 
     .content-grid {
@@ -289,23 +338,36 @@
     async function loadContents() {
       const res = await fetch('data.json?t=' + Date.now());
       const data = await res.json();
-      const container = document.getElementById('categories-container');
-      container.innerHTML = '';
       const contents = data.contents || [];
-      CATEGORIES.forEach(cat => {
-        const items = contents.filter(c => c.category === cat);
+      const container = document.getElementById('categories-container');
+      const params = new URLSearchParams(location.search);
+      const selected = params.get('cat');
+
+      if (selected && CATEGORIES.includes(selected)) {
+        const items = contents.filter(c => c.category === selected);
         const cards = items.length
           ? `<div class="content-grid">${items.map(c => `
               <div class="content-card">
                 <h3><a href="content-detail.html?id=${c.id}">${c.title}</a></h3>
               </div>`).join('')}</div>`
           : `<div class="category-empty">記事はまだありません</div>`;
-        container.innerHTML += `
-          <section class="category-section">
-            <h3 class="category-title">${cat}</h3>
-            ${cards}
-          </section>`;
-      });
+        container.innerHTML = `
+          <div class="category-heading">
+            <h3>${selected}</h3>
+            <a href="contents.html" class="category-back">← カテゴリ一覧</a>
+          </div>
+          ${cards}`;
+      } else {
+        container.innerHTML = `<div class="category-buttons">${
+          CATEGORIES.map(cat => {
+            const n = contents.filter(c => c.category === cat).length;
+            return `<a class="category-btn" href="contents.html?cat=${encodeURIComponent(cat)}">
+              <span>${cat}</span>
+              <span class="count">${n} 記事</span>
+            </a>`;
+          }).join('')
+        }</div>`;
+      }
     }
   </script>
 </body>
