@@ -68,6 +68,26 @@
       white-space: pre-wrap;
     }
 
+    .detail-back-wrap {
+      text-align: center;
+      margin-top: 48px;
+    }
+
+    .detail-back-btn {
+      display: inline-block;
+      padding: 12px 32px;
+      background: #fd6405;
+      color: #fff;
+      border-radius: 50px;
+      text-decoration: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+
+    .detail-back-btn:hover { background: #e55a04; }
+
     footer {
       background: #fd6405;
       color: #fff;
@@ -115,9 +135,15 @@
 
       document.title = `${item.title} - タコス倶楽部`;
 
+      const backHref = item.category
+        ? `contents.html?cat=${encodeURIComponent(item.category)}`
+        : 'contents.html';
       body.innerHTML = `
         <h2 class="detail-title">${item.title}</h2>
         <div class="detail-content">${item.body || ''}</div>
+        <div class="detail-back-wrap">
+          <a href="${backHref}" class="detail-back-btn">← 戻る</a>
+        </div>
       `;
     }
 
