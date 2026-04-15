@@ -359,13 +359,9 @@
           ${cards}`;
       } else {
         container.innerHTML = `<div class="category-buttons">${
-          CATEGORIES.map(cat => {
-            const n = contents.filter(c => c.category === cat).length;
-            return `<a class="category-btn" href="contents.html?cat=${encodeURIComponent(cat)}">
-              <span>${cat}</span>
-              <span class="count">${n} 記事</span>
-            </a>`;
-          }).join('')
+          CATEGORIES.map(cat =>
+            `<a class="category-btn" href="contents.html?cat=${encodeURIComponent(cat)}">${cat}</a>`
+          ).join('')
         }</div>`;
       }
     }
