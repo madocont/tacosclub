@@ -229,12 +229,25 @@
 
     .btn-icon:hover { background: #e74c3c; color: #fff; }
 
+    .btn-icon.btn-move:hover { background: #fd6405; color: #fff; }
+    .btn-icon:disabled { opacity: 0.3; cursor: not-allowed; }
+    .btn-icon:disabled:hover { background: #f5f5f5; color: #999; }
+
+    .card-actions {
+      display: flex;
+      gap: 6px;
+    }
+
     /* Member card */
     .member-row {
       display: flex;
-      gap: 20px;
+      gap: 16px;
       align-items: flex-start;
     }
+
+    .member-row .field.name-field { flex: 0 0 160px; }
+    .member-row .field.bio-field { flex: 1; min-width: 0; }
+    .member-row .field textarea { min-height: 72px; }
 
     .avatar-area {
       display: flex;
@@ -415,6 +428,7 @@
     /* Responsive */
     @media (max-width: 600px) {
       .member-row { flex-direction: column; }
+      .member-row .field.name-field { flex: 1 1 auto; width: 100%; }
       .avatar-area { flex-direction: row; gap: 12px; }
       .field-row { grid-template-columns: 1fr; }
       .edit-header { padding: 16px 20px; }
@@ -538,19 +552,21 @@
     function renderMembers() {
       const list = document.getElementById('member-list');
       list.innerHTML = '';
+      const last = data.members.length - 1;
       data.members.forEach((m, i) => {
         const num = String(i + 1).padStart(2, '0');
         const avatarContent = m.image
           ? `<img src="${escHtml(m.image)}" alt="">`
           : (m.emoji || '&#127790;');
         list.innerHTML += `
-          <div class="edit-card" data-index="${i}" ondragstart="onMemberDragStart(event, ${i})" ondragover="onMemberDragOver(event, ${i})" ondragleave="onMemberDragLeave(event)" ondrop="onMemberDrop(event, ${i})" ondragend="onMemberDragEnd(event)">
+          <div class="edit-card">
             <div class="card-header">
-              <div class="card-header-left">
-                <span class="drag-handle" title="ドラッグで並び替え" onmousedown="enableCardDrag(this)" onmouseup="disableCardDrag(this)" onmouseleave="disableCardDrag(this)">&#8942;&#8942;</span>
-                <span class="card-number">No.${num}</span>
+              <span class="card-number">No.${num}</span>
+              <div class="card-actions">
+                <button class="btn-icon btn-move" onclick="moveMember(${i}, -1)" title="上へ"${i === 0 ? ' disabled' : ''}>&uarr;</button>
+                <button class="btn-icon btn-move" onclick="moveMember(${i}, 1)" title="下へ"${i === last ? ' disabled' : ''}>&darr;</button>
+                <button class="btn-icon" onclick="deleteMember(${i})" title="削除">&#10005;</button>
               </div>
-              <button class="btn-icon" onclick="deleteMember(${i})" title="削除">&#10005;</button>
             </div>
             <div class="member-row">
               <div class="avatar-area">
@@ -560,21 +576,13 @@
                 <input type="file" id="file-${i}" class="file-input" accept="image/*" onchange="handleImage(${i}, this)">
                 <span class="avatar-label">画像変更</span>
               </div>
-              <div class="field-group">
-                <div class="field-row">
-                  <div class="field">
-                    <label>名前</label>
-                    <input type="text" value="${escHtml(m.name)}" oninput="updateMember(${i}, 'name', this.value)">
-                  </div>
-                  <div class="field">
-                    <label>会員番号</label>
-                    <input type="text" value="${escHtml(m.number || '')}" placeholder="例: 01" oninput="updateMember(${i}, 'number', this.value)">
-                  </div>
-                </div>
-                <div class="field">
-                  <label>紹介文</label>
-                  <textarea oninput="updateMember(${i}, 'bio', this.value)">${escHtml(m.bio)}</textarea>
-                </div>
+              <div class="field name-field">
+                <label>名前</label>
+                <input type="text" value="${escHtml(m.name)}" oninput="updateMember(${i}, 'name', this.value)">
+              </div>
+              <div class="field bio-field">
+                <label>紹介文</label>
+                <textarea oninput="updateMember(${i}, 'bio', this.value)">${escHtml(m.bio)}</textarea>
               </div>
             </div>
           </div>`;
@@ -586,53 +594,16 @@
       markDirty();
     }
 
-    // ---- Member drag & drop reorder ----
-    let draggedIndex = null;
-
-    function enableCardDrag(handle) {
-      const card = handle.closest('.edit-card');
-      if (card) card.setAttribute('draggable', 'true');
-    }
-
-    function disableCardDrag(handle) {
-      const card = handle.closest('.edit-card');
-      if (card) card.setAttribute('draggable', 'false');
-    }
-
-    function onMemberDragStart(e, i) {
-      draggedIndex = i;
-      e.dataTransfer.effectAllowed = 'move';
-      e.currentTarget.classList.add('dragging');
-    }
-
-    function onMemberDragOver(e, i) {
-      if (draggedIndex === null || draggedIndex === i) return;
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      e.currentTarget.classList.add('drag-over');
-    }
-
-    function onMemberDragLeave(e) {
-      e.currentTarget.classList.remove('drag-over');
-    }
-
-    function onMemberDrop(e, i) {
-      e.preventDefault();
-      e.currentTarget.classList.remove('drag-over');
-      if (draggedIndex === null || draggedIndex === i) return;
-      const [moved] = data.members.splice(draggedIndex, 1);
-      data.members.splice(i, 0, moved);
+    // ---- Member reorder (up/down) ----
+    function moveMember(i, direction) {
+      const j = i + direction;
+      if (j < 0 || j >= data.members.length) return;
+      const tmp = data.members[i];
+      data.members[i] = data.members[j];
+      data.members[j] = tmp;
       renumberMembers();
       renderMembers();
       markDirty();
-    }
-
-    function onMemberDragEnd(e) {
-      e.currentTarget.classList.remove('dragging');
-      e.currentTarget.setAttribute('draggable', 'false');
-      document.querySelectorAll('.edit-card.drag-over').forEach(el => el.classList.remove('drag-over'));
-      draggedIndex = null;
-      draggedLinkIndex = null;
     }
 
     function renumberMembers() {
@@ -641,9 +612,29 @@
       });
     }
 
+    // ---- Shared card drag helpers (used by Links) ----
+    function enableCardDrag(handle) {
+      const card = handle.closest('.edit-card');
+      if (card) card.setAttribute('draggable', 'true');
+    }
+    function disableCardDrag(handle) {
+      const card = handle.closest('.edit-card');
+      if (card) card.setAttribute('draggable', 'false');
+    }
+    function onMemberDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+    function onMemberDragEnd(e) {
+      e.currentTarget.classList.remove('dragging');
+      e.currentTarget.setAttribute('draggable', 'false');
+      document.querySelectorAll('.edit-card.drag-over').forEach(el => el.classList.remove('drag-over'));
+      draggedLinkIndex = null;
+    }
+
     function addMember() {
       const newId = data.members.length > 0 ? Math.max(...data.members.map(m => m.id)) + 1 : 1;
       data.members.push({ id: newId, name: '', number: '', bio: '', emoji: '🌮', image: '' });
+      renumberMembers();
       renderMembers();
       updateCounts();
       markDirty();
@@ -652,6 +643,7 @@
     function deleteMember(i) {
       if (confirm(`「${data.members[i].name || '新規メンバー'}」を削除しますか？`)) {
         data.members.splice(i, 1);
+        renumberMembers();
         renderMembers();
         updateCounts();
         markDirty();
