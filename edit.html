@@ -189,6 +189,28 @@
       color: #fd6405;
     }
 
+    .card-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .drag-handle {
+      cursor: grab;
+      color: #ccc;
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: 2px 4px;
+      user-select: none;
+      transition: color 0.2s;
+    }
+
+    .drag-handle:hover { color: #666; }
+    .drag-handle:active { cursor: grabbing; }
+
+    .edit-card.dragging { opacity: 0.4; }
+    .edit-card.drag-over { box-shadow: 0 0 0 2px #fd6405; }
+
     .btn-icon {
       width: 32px;
       height: 32px;
@@ -509,9 +531,12 @@
           ? `<img src="${escHtml(m.image)}" alt="">`
           : (m.emoji || '&#127790;');
         list.innerHTML += `
-          <div class="edit-card">
+          <div class="edit-card" data-index="${i}" ondragstart="onMemberDragStart(event, ${i})" ondragover="onMemberDragOver(event, ${i})" ondragleave="onMemberDragLeave(event)" ondrop="onMemberDrop(event, ${i})" ondragend="onMemberDragEnd(event)">
             <div class="card-header">
-              <span class="card-number">No.${num}</span>
+              <div class="card-header-left">
+                <span class="drag-handle" title="ドラッグで並び替え" onmousedown="enableCardDrag(this)" onmouseup="disableCardDrag(this)" onmouseleave="disableCardDrag(this)">&#8942;&#8942;</span>
+                <span class="card-number">No.${num}</span>
+              </div>
               <button class="btn-icon" onclick="deleteMember(${i})" title="削除">&#10005;</button>
             </div>
             <div class="member-row">
@@ -546,6 +571,60 @@
     function updateMember(i, field, value) {
       data.members[i][field] = value;
       markDirty();
+    }
+
+    // ---- Member drag & drop reorder ----
+    let draggedIndex = null;
+
+    function enableCardDrag(handle) {
+      const card = handle.closest('.edit-card');
+      if (card) card.setAttribute('draggable', 'true');
+    }
+
+    function disableCardDrag(handle) {
+      const card = handle.closest('.edit-card');
+      if (card) card.setAttribute('draggable', 'false');
+    }
+
+    function onMemberDragStart(e, i) {
+      draggedIndex = i;
+      e.dataTransfer.effectAllowed = 'move';
+      e.currentTarget.classList.add('dragging');
+    }
+
+    function onMemberDragOver(e, i) {
+      if (draggedIndex === null || draggedIndex === i) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      e.currentTarget.classList.add('drag-over');
+    }
+
+    function onMemberDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+
+    function onMemberDrop(e, i) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      if (draggedIndex === null || draggedIndex === i) return;
+      const [moved] = data.members.splice(draggedIndex, 1);
+      data.members.splice(i, 0, moved);
+      renumberMembers();
+      renderMembers();
+      markDirty();
+    }
+
+    function onMemberDragEnd(e) {
+      e.currentTarget.classList.remove('dragging');
+      e.currentTarget.setAttribute('draggable', 'false');
+      document.querySelectorAll('.edit-card.drag-over').forEach(el => el.classList.remove('drag-over'));
+      draggedIndex = null;
+    }
+
+    function renumberMembers() {
+      data.members.forEach((m, i) => {
+        m.number = String(i + 1).padStart(2, '0');
+      });
     }
 
     function addMember() {
