@@ -103,7 +103,7 @@
     {
       "id": 13,
       "name": "オギユカ",
-      "number": "",
+      "number": "13",
       "bio": "京都在住のライター",
       "emoji": "🌮",
       "image": ""
@@ -111,16 +111,24 @@
     {
       "id": 14,
       "name": "ぱせかのふたり",
-      "number": "",
+      "number": "14",
       "bio": "京都のZINEの隠れ家、スペースぱせか運営",
       "emoji": "🌮",
       "image": ""
     },
     {
       "id": 15,
-      "name": "Hikaru",
-      "number": "",
+      "name": "Hiraku",
+      "number": "15",
       "bio": "クリエイティブ交流会Knotかもがわ主催者",
+      "emoji": "🌮",
+      "image": ""
+    },
+    {
+      "id": 16,
+      "name": "杜野菫",
+      "number": "16",
+      "bio": "現代漆職人",
       "emoji": "🌮",
       "image": ""
     }
