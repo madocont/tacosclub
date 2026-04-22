@@ -71,11 +71,12 @@
       position: sticky;
       top: 0;
       z-index: 100;
+      overflow-x: auto;
     }
 
     .tab-btn {
-      flex: 1;
-      padding: 16px 20px;
+      flex: 1 0 auto;
+      padding: 16px 16px;
       border: none;
       background: none;
       font-family: 'Montserrat', sans-serif;
@@ -441,6 +442,9 @@
     <button class="tab-btn" onclick="switchTab('contents')">
       Contents<span class="tab-count" id="count-contents">0</span>
     </button>
+    <button class="tab-btn" onclick="switchTab('links')">
+      Links<span class="tab-count" id="count-links">0</span>
+    </button>
   </div>
 
   <div class="container">
@@ -460,6 +464,12 @@
     <div class="tab-panel" id="panel-contents">
       <div class="card-list" id="contents-list"></div>
       <button class="btn-add" onclick="addContent()" style="margin-top:16px">+ コンテンツを追加</button>
+    </div>
+
+    <!-- Links -->
+    <div class="tab-panel" id="panel-links">
+      <div class="card-list" id="link-list"></div>
+      <button class="btn-add" onclick="addLink()" style="margin-top:16px">+ リンクを追加</button>
     </div>
   </div>
 
@@ -482,7 +492,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    let data = { members: [], news: [], contents: [] };
+    let data = { members: [], news: [], contents: [], links: [] };
     let dirty = false;
 
     // ---- Tab switching ----
@@ -497,6 +507,7 @@
       document.getElementById('count-members').textContent = data.members.length;
       document.getElementById('count-news').textContent = data.news.length;
       document.getElementById('count-contents').textContent = (data.contents || []).length;
+      document.getElementById('count-links').textContent = (data.links || []).length;
     }
 
     function markDirty() {
@@ -511,6 +522,7 @@
       data = await res.json();
       if (!data.contents) data.contents = [];
       if (!data.news) data.news = [];
+      if (!data.links) data.links = [];
       renderAll();
     }
 
@@ -518,6 +530,7 @@
       renderMembers();
       renderNews();
       renderContents();
+      renderLinks();
       updateCounts();
     }
 
@@ -619,6 +632,7 @@
       e.currentTarget.setAttribute('draggable', 'false');
       document.querySelectorAll('.edit-card.drag-over').forEach(el => el.classList.remove('drag-over'));
       draggedIndex = null;
+      draggedLinkIndex = null;
     }
 
     function renumberMembers() {
@@ -764,6 +778,81 @@
         updateCounts();
         markDirty();
       }
+    }
+
+    // ---- Links ----
+    function renderLinks() {
+      const list = document.getElementById('link-list');
+      list.innerHTML = '';
+      data.links.forEach((l, i) => {
+        list.innerHTML += `
+          <div class="edit-card" data-index="${i}" ondragstart="onLinkDragStart(event, ${i})" ondragover="onLinkDragOver(event, ${i})" ondragleave="onMemberDragLeave(event)" ondrop="onLinkDrop(event, ${i})" ondragend="onMemberDragEnd(event)">
+            <div class="card-header">
+              <div class="card-header-left">
+                <span class="drag-handle" title="ドラッグで並び替え" onmousedown="enableCardDrag(this)" onmouseup="disableCardDrag(this)" onmouseleave="disableCardDrag(this)">&#8942;&#8942;</span>
+                <span class="card-number">LINK #${i + 1}</span>
+              </div>
+              <button class="btn-icon" onclick="deleteLink(${i})" title="削除">&#10005;</button>
+            </div>
+            <div class="field-group">
+              <div class="field">
+                <label>ラベル</label>
+                <input type="text" value="${escHtml(l.label || '')}" placeholder="例: Instagram"
+                       oninput="updateLink(${i}, 'label', this.value)">
+              </div>
+              <div class="field">
+                <label>URL</label>
+                <input type="text" value="${escHtml(l.url || '')}" placeholder="https://... または mailto:..."
+                       oninput="updateLink(${i}, 'url', this.value)">
+              </div>
+            </div>
+          </div>`;
+      });
+    }
+
+    function updateLink(i, field, value) {
+      data.links[i][field] = value;
+      markDirty();
+    }
+
+    function addLink() {
+      const newId = data.links.length > 0 ? Math.max(...data.links.map(l => l.id || 0)) + 1 : 1;
+      data.links.push({ id: newId, label: '', url: '' });
+      renderLinks();
+      updateCounts();
+      markDirty();
+    }
+
+    function deleteLink(i) {
+      if (confirm(`「${data.links[i].label || '新規リンク'}」を削除しますか？`)) {
+        data.links.splice(i, 1);
+        renderLinks();
+        updateCounts();
+        markDirty();
+      }
+    }
+
+    let draggedLinkIndex = null;
+    function onLinkDragStart(e, i) {
+      draggedLinkIndex = i;
+      e.dataTransfer.effectAllowed = 'move';
+      e.currentTarget.classList.add('dragging');
+    }
+    function onLinkDragOver(e, i) {
+      if (draggedLinkIndex === null || draggedLinkIndex === i) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      e.currentTarget.classList.add('drag-over');
+    }
+    function onLinkDrop(e, i) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      if (draggedLinkIndex === null || draggedLinkIndex === i) return;
+      const [moved] = data.links.splice(draggedLinkIndex, 1);
+      data.links.splice(i, 0, moved);
+      draggedLinkIndex = null;
+      renderLinks();
+      markDirty();
     }
 
     // ---- Save via GitHub API ----

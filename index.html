@@ -282,30 +282,31 @@
       text-align: center;
     }
 
-    .contact-wrapper p {
-      color: #555;
-      font-size: 1rem;
-      line-height: 2;
-      margin-bottom: 24px;
+    .link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 420px;
+      margin: 0 auto;
     }
 
-    .contact-btn {
-      display: inline-block;
-      background: #fd6405;
-      color: #fff;
+    .link-item {
+      display: block;
+      background: #fff;
+      color: #333;
       text-decoration: none;
-      padding: 14px 48px;
-      border-radius: 50px;
-      font-family: 'Kaisei HarunoUmi', serif;
-      font-size: 1rem;
+      padding: 16px 24px;
+      border-radius: 12px;
+      border: 2px solid #eee;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.95rem;
       font-weight: 500;
-      letter-spacing: 0.1em;
-      transition: background 0.2s, transform 0.2s;
-      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s, color 0.2s;
     }
 
-    .contact-btn:hover {
-      background: #e55a04;
+    .link-item:hover {
+      border-color: #fd6405;
+      color: #fd6405;
       transform: translateY(-2px);
     }
 
@@ -391,11 +392,7 @@
   <section id="contact">
     <h2>Contact</h2>
     <div class="contact-wrapper">
-      <p>
-        入会のご相談やイベントについてのご質問は<br>
-        お気軽にお問い合わせください。
-      </p>
-      <a href="mailto:info@tacos-club.example.com" class="contact-btn">メールを送る</a>
+      <div class="link-list" id="link-list"></div>
     </div>
   </section>
 
@@ -440,6 +437,15 @@
             <span class="date">${n.date}</span>
             <span class="event">${n.event}</span>
           </div>`;
+      });
+
+      const linkList = document.getElementById('link-list');
+      linkList.innerHTML = '';
+      (data.links || []).forEach(l => {
+        if (!l.url) return;
+        const isExternal = /^https?:\/\//.test(l.url);
+        const target = isExternal ? ' target="_blank" rel="noopener"' : '';
+        linkList.innerHTML += `<a class="link-item" href="${l.url}"${target}>${l.label || l.url}</a>`;
       });
     }
     loadAndRender();
