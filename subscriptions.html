@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サブスク家計簿</title>
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="icon" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Montserrat:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #fd6405;
+      --primary-dark: #e55a04;
+      --primary-light: #ff9a44;
+      --bg: #fffaf5;
+      --card: #ffffff;
+      --text: #333;
+      --muted: #999;
+      --border: #f0e8e0;
+      --danger: #e74c3c;
+      --soon: #ffb300;
+    }
+
+    body {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 32px 20px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      bottom: -28px;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: var(--bg);
+      border-radius: 50% 50% 0 0;
+    }
+
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .header-title h1 {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.7rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      color: #fff;
+    }
+
+    .header-title p {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 0.8rem;
+      opacity: 0.85;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+
+    .header-back {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.85rem;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    .header-back:hover { opacity: 1; }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+
+    /* Summary */
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .summary-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 18px 16px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(253, 100, 5, 0.06);
+    }
+
+    .summary-card .label {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .summary-card .value {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+
+    .summary-card .value .yen {
+      font-size: 0.9rem;
+      margin-right: 1px;
+    }
+
+    .summary-card .sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      background: #fff;
+      border: 2px solid #eee;
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .chip:hover { border-color: var(--primary-light); }
+    .chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-secondary { background: #eee; color: var(--text); }
+    .btn-secondary:hover { background: #e0e0e0; }
+    .btn-ghost { background: transparent; color: var(--muted); padding: 6px 10px; }
+    .btn-ghost:hover { color: var(--primary); }
+
+    /* List */
+    .sub-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sub-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 48px 1fr auto auto;
+      gap: 14px;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+      border-left: 4px solid transparent;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .sub-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+
+    .sub-card.due-soon { border-left-color: var(--soon); }
+    .sub-card.due-today { border-left-color: var(--danger); }
+
+    .sub-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+    }
+
+    .sub-info .name {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 2px;
+    }
+
+    .sub-info .meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .sub-info .meta .badge {
+      background: #f5efe9;
+      color: #8a7a6a;
+      padding: 1px 8px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .sub-info .meta .due {
+      color: var(--soon);
+      font-weight: 600;
+    }
+    .sub-info .meta .due.today { color: var(--danger); }
+    .sub-info .meta .due.future { color: var(--muted); font-weight: 400; }
+
+    .sub-price {
+      text-align: right;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .sub-price .amount {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+    .sub-price .amount .yen { font-size: 0.85rem; margin-right: 1px; }
+
+    .sub-price .cycle {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .sub-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: var(--muted);
+      transition: background 0.15s, color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .icon-btn:hover { background: #f5f0ea; color: var(--primary); }
+    .icon-btn.danger:hover { background: #fdecea; color: var(--danger); }
+
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+    .empty .emoji { font-size: 3rem; margin-bottom: 12px; opacity: 0.6; }
+    .empty p { font-size: 0.95rem; }
+
+    /* FAB */
+    .fab {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(253, 100, 5, 0.4);
+      transition: transform 0.15s;
+      z-index: 50;
+    }
+    .fab:hover { transform: scale(1.06); }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      background: #fff;
+      border-radius: 18px;
+      padding: 28px;
+      width: 460px;
+      max-width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .form-grid .full { grid-column: 1 / -1; }
+
+    .field label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 2px solid #eee;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: #fff;
+      color: var(--text);
+      transition: border-color 0.15s;
+    }
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+
+    .emoji-picker {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 8px;
+      border: 2px solid #eee;
+      border-radius: 9px;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    .emoji-picker button {
+      width: 34px;
+      height: 34px;
+      border: 2px solid transparent;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+    .emoji-picker button:hover { background: #fff5ec; }
+    .emoji-picker button.selected {
+      border-color: var(--primary);
+      background: #fff5ec;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-actions .right {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 92px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #333;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 24px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: transform 0.25s, opacity 0.25s;
+      z-index: 300;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 600px) {
+      .summary {
+        grid-template-columns: 1fr;
+      }
+      .summary-card { padding: 14px; }
+      .sub-card {
+        grid-template-columns: 44px 1fr auto;
+        grid-template-rows: auto auto;
+        gap: 10px 12px;
+      }
+      .sub-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+      }
+      .form-grid { grid-template-columns: 1fr; }
+      .header-title h1 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="header-title">
+        <h1>サブスク家計簿</h1>
+        <p>SUBSCRIPTION TRACKER</p>
+      </div>
+      <a class="header-back" href="index.html">← トップへ</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="summary">
+      <div class="summary-card">
+        <div class="label">MONTHLY</div>
+        <div class="value"><span class="yen">¥</span><span id="sum-monthly">0</span></div>
+        <div class="sub">月あたり</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">YEARLY</div>
+        <div class="value"><span class="yen">¥</span><span id="sum-yearly">0</span></div>
+        <div class="sub">年あたり</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">ACTIVE</div>
+        <div class="value"><span id="sum-count">0</span></div>
+        <div class="sub">契約中</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="filter-group" id="filter-group"></div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-ghost" onclick="exportData()" title="JSONエクスポート">⤓ Export</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()" title="JSONインポート">⤒ Import</button>
+        <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importData(this)">
+      </div>
+    </div>
+
+    <div class="sub-list" id="sub-list"></div>
+  </main>
+
+  <button class="fab" onclick="openModal()" title="追加">＋</button>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <h3 id="modal-title">サブスクを追加</h3>
+      <div class="form-grid">
+        <div class="field full">
+          <label>サービス名</label>
+          <input type="text" id="f-name" placeholder="Netflix, Spotify…">
+        </div>
+        <div class="field">
+          <label>金額（円）</label>
+          <input type="number" id="f-amount" min="0" step="1" placeholder="1490">
+        </div>
+        <div class="field">
+          <label>請求サイクル</label>
+          <select id="f-cycle">
+            <option value="monthly">月額</option>
+            <option value="yearly">年額</option>
+            <option value="weekly">週額</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>次回請求日</label>
+          <input type="date" id="f-next">
+        </div>
+        <div class="field">
+          <label>カテゴリ</label>
+          <select id="f-category">
+            <option value="動画">動画</option>
+            <option value="音楽">音楽</option>
+            <option value="ゲーム">ゲーム</option>
+            <option value="読書">読書</option>
+            <option value="クラウド">クラウド</option>
+            <option value="仕事">仕事</option>
+            <option value="生活">生活</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>アイコン</label>
+          <div class="emoji-picker" id="emoji-picker"></div>
+        </div>
+        <div class="field full">
+          <label>メモ（任意）</label>
+          <input type="text" id="f-note" placeholder="家族プラン、年間契約など">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost danger" id="delete-btn" onclick="deleteCurrent()" style="display:none; color:var(--danger);">削除</button>
+        <div class="right" style="margin-left:auto;">
+          <button class="btn btn-secondary" onclick="closeModal()">キャンセル</button>
+          <button class="btn btn-primary" onclick="saveSub()">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = 'tacosclub-subscriptions-v1';
+    const EMOJIS = ['🎬','🎵','🎮','📚','☁️','💼','🏠','🌮','📺','🎧','📰','🛒','💪','🚗','🐱','✈️','📱','💡','🍔','☕','🧘','🎨','🔧','🌐','💳'];
+
+    let subs = [];
+    let editingId = null;
+    let activeFilter = 'all';
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        subs = raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        subs = [];
+      }
+    }
+
+    function persist() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(subs));
+    }
+
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    }
+
+    function todayISO() {
+      const d = new Date();
+      d.setHours(0,0,0,0);
+      return d.toISOString().slice(0,10);
+    }
+
+    function monthlyOf(s) {
+      const a = Number(s.amount) || 0;
+      if (s.cycle === 'yearly') return a / 12;
+      if (s.cycle === 'weekly') return a * 52 / 12;
+      return a;
+    }
+
+    function fmt(n) {
+      return Math.round(n).toLocaleString('ja-JP');
+    }
+
+    function diffDays(iso) {
+      if (!iso) return null;
+      const today = new Date(todayISO());
+      const target = new Date(iso);
+      target.setHours(0,0,0,0);
+      const ms = target - today;
+      return Math.round(ms / 86400000);
+    }
+
+    function advanceDate(iso, cycle) {
+      const d = new Date(iso);
+      if (cycle === 'yearly') d.setFullYear(d.getFullYear() + 1);
+      else if (cycle === 'weekly') d.setDate(d.getDate() + 7);
+      else d.setMonth(d.getMonth() + 1);
+      return d.toISOString().slice(0,10);
+    }
+
+    function autoRoll() {
+      let changed = false;
+      subs.forEach(s => {
+        if (!s.next) return;
+        let guard = 0;
+        while (diffDays(s.next) < 0 && guard < 60) {
+          s.next = advanceDate(s.next, s.cycle);
+          changed = true;
+          guard++;
+        }
+      });
+      if (changed) persist();
+    }
+
+    function render() {
+      const totalMonthly = subs.reduce((sum, s) => sum + monthlyOf(s), 0);
+      document.getElementById('sum-monthly').textContent = fmt(totalMonthly);
+      document.getElementById('sum-yearly').textContent = fmt(totalMonthly * 12);
+      document.getElementById('sum-count').textContent = subs.length;
+
+      const categories = Array.from(new Set(subs.map(s => s.category).filter(Boolean)));
+      const fg = document.getElementById('filter-group');
+      fg.innerHTML = '';
+      const allBtn = document.createElement('button');
+      allBtn.className = 'chip' + (activeFilter === 'all' ? ' active' : '');
+      allBtn.textContent = `すべて (${subs.length})`;
+      allBtn.onclick = () => { activeFilter = 'all'; render(); };
+      fg.appendChild(allBtn);
+      categories.forEach(cat => {
+        const count = subs.filter(s => s.category === cat).length;
+        const b = document.createElement('button');
+        b.className = 'chip' + (activeFilter === cat ? ' active' : '');
+        b.textContent = `${cat} (${count})`;
+        b.onclick = () => { activeFilter = cat; render(); };
+        fg.appendChild(b);
+      });
+
+      const list = document.getElementById('sub-list');
+      const filtered = subs
+        .filter(s => activeFilter === 'all' || s.category === activeFilter)
+        .slice()
+        .sort((a, b) => {
+          const da = diffDays(a.next);
+          const db = diffDays(b.next);
+          if (da === null && db === null) return 0;
+          if (da === null) return 1;
+          if (db === null) return -1;
+          return da - db;
+        });
+
+      if (filtered.length === 0) {
+        list.innerHTML = `
+          <div class="empty">
+            <div class="emoji">🌮</div>
+            <p>${subs.length === 0 ? 'まだサブスクが登録されていません。<br>右下の＋ボタンから追加しましょう。' : 'このカテゴリにはサブスクがありません。'}</p>
+          </div>`;
+        return;
+      }
+
+      list.innerHTML = '';
+      filtered.forEach(s => {
+        const days = diffDays(s.next);
+        let dueClass = 'future';
+        let dueText = '';
+        let cardClass = '';
+        if (days !== null) {
+          if (days <= 0) { dueClass = 'today'; dueText = '今日が請求日'; cardClass = 'due-today'; }
+          else if (days <= 7) { dueClass = ''; dueText = `あと${days}日`; cardClass = 'due-soon'; }
+          else if (days <= 30) { dueText = `あと${days}日`; }
+          else {
+            const d = new Date(s.next);
+            dueText = `${d.getMonth()+1}/${d.getDate()}`;
+          }
+        }
+        const cycleLabel = s.cycle === 'yearly' ? '/年' : s.cycle === 'weekly' ? '/週' : '/月';
+        const note = s.note ? `<span>${escapeHtml(s.note)}</span>` : '';
+        const cat = s.category ? `<span class="badge">${escapeHtml(s.category)}</span>` : '';
+        const due = dueText ? `<span class="due ${dueClass}">${dueText}</span>` : '';
+        const icon = s.emoji || '🌮';
+        const card = document.createElement('div');
+        card.className = `sub-card ${cardClass}`;
+        card.innerHTML = `
+          <div class="sub-icon">${icon}</div>
+          <div class="sub-info">
+            <div class="name">${escapeHtml(s.name || '(無名)')}</div>
+            <div class="meta">${cat}${due}${note}</div>
+          </div>
+          <div class="sub-price">
+            <div class="amount"><span class="yen">¥</span>${fmt(s.amount)}</div>
+            <div class="cycle">${cycleLabel}</div>
+          </div>
+          <div class="sub-actions">
+            <button class="icon-btn" title="編集" data-act="edit">✎</button>
+            <button class="icon-btn danger" title="削除" data-act="del">✕</button>
+          </div>`;
+        card.querySelector('[data-act="edit"]').onclick = () => openModal(s.id);
+        card.querySelector('[data-act="del"]').onclick = () => deleteSub(s.id);
+        list.appendChild(card);
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      })[c]);
+    }
+
+    function buildEmojiPicker(selected) {
+      const wrap = document.getElementById('emoji-picker');
+      wrap.innerHTML = '';
+      EMOJIS.forEach(e => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = e;
+        if (e === selected) b.classList.add('selected');
+        b.onclick = () => {
+          wrap.querySelectorAll('button').forEach(x => x.classList.remove('selected'));
+          b.classList.add('selected');
+        };
+        wrap.appendChild(b);
+      });
+    }
+
+    function openModal(id) {
+      editingId = id || null;
+      const sub = id ? subs.find(s => s.id === id) : null;
+      document.getElementById('modal-title').textContent = sub ? 'サブスクを編集' : 'サブスクを追加';
+      document.getElementById('f-name').value = sub?.name || '';
+      document.getElementById('f-amount').value = sub?.amount ?? '';
+      document.getElementById('f-cycle').value = sub?.cycle || 'monthly';
+      document.getElementById('f-next').value = sub?.next || todayISO();
+      document.getElementById('f-category').value = sub?.category || '動画';
+      document.getElementById('f-note').value = sub?.note || '';
+      buildEmojiPicker(sub?.emoji || '🎬');
+      document.getElementById('delete-btn').style.display = sub ? 'inline-flex' : 'none';
+      document.getElementById('modal').classList.add('show');
+      setTimeout(() => document.getElementById('f-name').focus(), 50);
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('show');
+      editingId = null;
+    }
+
+    function selectedEmoji() {
+      const sel = document.querySelector('#emoji-picker button.selected');
+      return sel ? sel.textContent : '🎬';
+    }
+
+    function saveSub() {
+      const name = document.getElementById('f-name').value.trim();
+      const amount = Number(document.getElementById('f-amount').value);
+      if (!name) return showToast('サービス名を入力してください');
+      if (!amount || amount < 0) return showToast('金額を入力してください');
+      const data = {
+        name,
+        amount,
+        cycle: document.getElementById('f-cycle').value,
+        next: document.getElementById('f-next').value || todayISO(),
+        category: document.getElementById('f-category').value,
+        note: document.getElementById('f-note').value.trim(),
+        emoji: selectedEmoji(),
+      };
+      if (editingId) {
+        const i = subs.findIndex(s => s.id === editingId);
+        if (i >= 0) subs[i] = { ...subs[i], ...data };
+      } else {
+        subs.push({ id: uid(), ...data });
+      }
+      persist();
+      closeModal();
+      render();
+      showToast(editingId ? '更新しました' : '追加しました');
+    }
+
+    function deleteCurrent() {
+      if (!editingId) return;
+      const s = subs.find(x => x.id === editingId);
+      if (!s) return;
+      if (!confirm(`「${s.name}」を削除しますか？`)) return;
+      subs = subs.filter(x => x.id !== editingId);
+      persist();
+      closeModal();
+      render();
+      showToast('削除しました');
+    }
+
+    function deleteSub(id) {
+      const s = subs.find(x => x.id === id);
+      if (!s) return;
+      if (!confirm(`「${s.name}」を削除しますか？`)) return;
+      subs = subs.filter(x => x.id !== id);
+      persist();
+      render();
+      showToast('削除しました');
+    }
+
+    function exportData() {
+      if (subs.length === 0) return showToast('データがありません');
+      const blob = new Blob([JSON.stringify(subs, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `subscriptions-${todayISO()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importData(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const incoming = JSON.parse(e.target.result);
+          if (!Array.isArray(incoming)) throw new Error('配列ではありません');
+          if (subs.length > 0 && !confirm(`現在の${subs.length}件を置き換えますか？\n（キャンセルでマージ）`)) {
+            const existingIds = new Set(subs.map(s => s.id));
+            incoming.forEach(s => {
+              if (!s.id || existingIds.has(s.id)) s.id = uid();
+              subs.push(s);
+            });
+          } else {
+            subs = incoming.map(s => ({ id: s.id || uid(), ...s }));
+          }
+          persist();
+          render();
+          showToast(`${incoming.length}件を読み込みました`);
+        } catch (err) {
+          showToast('読み込み失敗: ' + err.message);
+        } finally {
+          input.value = '';
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+    }
+
+    document.getElementById('modal').addEventListener('click', e => {
+      if (e.target.id === 'modal') closeModal();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    load();
+    autoRoll();
+    render();
+  </script>
+</body>
+</html>
