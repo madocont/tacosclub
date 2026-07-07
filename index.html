@@ -50,23 +50,11 @@
       position: relative;
     }
 
-    .hero-logo h1 {
-      font-family: 'Yellowtail', cursive;
-      font-size: 6rem;
-      font-weight: 400;
-      line-height: 1.1;
-      color: #fff;
-      letter-spacing: 0.02em;
-      text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
-    }
-
-    .hero-logo p {
-      margin-top: 16px;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 0.45em;
-      text-indent: 0.45em;
-      color: #fff;
+    .hero-logo img {
+      width: min(300px, 62vw);
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.45));
     }
 
     .hero-scroll {
@@ -318,8 +306,7 @@
 
     /* Responsive */
     @media (max-width: 700px) {
-      .hero-logo h1 { font-size: 3.6rem; }
-      .hero-logo p { font-size: 0.85rem; }
+      .hero-logo img { width: min(230px, 66vw); }
 
       nav { gap: 16px; flex-wrap: wrap; }
 
@@ -342,8 +329,7 @@
 
   <header class="hero" id="hero">
     <div class="hero-logo" id="hero-logo">
-      <h1>Tacos Club</h1>
-      <p>タコス倶楽部</p>
+      <img src="icon.png" alt="タコス倶楽部">
     </div>
     <div class="hero-scroll">SCROLL</div>
   </header>
