@@ -303,7 +303,8 @@
   </div>
 
   <script>
-    const PASSCODE = '0408';
+    const PASSCODE = 'taqueria000';
+    const EDIT_CODE = 'hensyuu';
 
     // Check if already authenticated
     if (sessionStorage.getItem('tacos-auth') === 'true') {
@@ -317,7 +318,9 @@
 
     function unlock() {
       const input = document.getElementById('passcode-input');
-      if (input.value === PASSCODE) {
+      if (input.value === EDIT_CODE) {
+        location.href = 'edit.html';
+      } else if (input.value === PASSCODE) {
         sessionStorage.setItem('tacos-auth', 'true');
         showContents();
       } else {
