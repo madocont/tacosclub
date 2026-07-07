@@ -6,7 +6,20 @@
   <title>タコス倶楽部</title>
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="icon" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Antique&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --cream: #efe4cc;
+      --terra: #cf4f2b;
+      --red:   #b1302b;
+      --sage:  #6d7b50;
+      --navy:  #23303b;
+      --gold:  #d7a95a;
+      --brown: #2b2119;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -47,171 +60,175 @@
     }
 
     .hero-logo img {
-      width: min(420px, 80vw);
+      width: min(520px, 88vw);
       height: auto;
       display: block;
       filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.5));
     }
 
-    /* Layout */
+    /* Content mosaic */
     main {
-      max-width: 960px;
-      margin: 64px auto 96px;
-      padding: 0 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
+      max-width: 1040px;
+      margin: 18px auto 64px;
+      padding: 0 16px;
     }
 
-    .sec-card {
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: 28px;
-      padding: 40px;
-      background: rgba(0, 0, 0, 0.45);
+    .mosaic {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-areas:
+        "about about members"
+        "news  contents contents"
+        "member member member";
+      gap: 14px;
     }
 
-    .sec-card h2 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      line-height: 1.15;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-      color: #fff;
+    .blk {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      padding: 36px;
+      text-decoration: none;
+      transition: transform 0.2s, filter 0.2s;
     }
 
-    .sec-desc {
-      font-size: 0.94rem;
-      line-height: 2;
-      color: #fff;
+    a.blk:hover { transform: translateY(-3px); filter: brightness(1.06); }
+
+    .blk .kanji {
+      position: absolute;
+      right: -8px;
+      bottom: -22px;
+      font-family: 'Zen Antique', serif;
+      font-size: 8.5rem;
+      line-height: 1;
+      opacity: 0.12;
+      pointer-events: none;
+      user-select: none;
     }
 
-    /* About — plain, centered on background */
-    .about {
-      text-align: center;
-      padding: 24px 20px 8px;
-    }
-
-    .about h2 {
-      font-size: 2.4rem;
+    .blk h2 {
+      font-size: 2rem;
       font-weight: 800;
       letter-spacing: 0.03em;
+      line-height: 1.15;
       text-transform: uppercase;
-      margin-bottom: 24px;
     }
 
-    /* News + Contents side by side */
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      align-items: stretch;
+    .tag {
+      display: inline-block;
+      font-family: 'Zen Antique', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      opacity: 0.75;
+      margin-bottom: 12px;
     }
 
-    .two-col > * { margin: 0; }
+    /* About */
+    .blk.about {
+      grid-area: about;
+      background: var(--sage);
+      color: var(--cream);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .blk.about .sec-desc {
+      color: var(--cream);
+      font-size: 0.95rem;
+      line-height: 2;
+      margin-top: 12px;
+    }
+
+    /* Members only (join → STORES) */
+    .blk.members {
+      grid-area: members;
+      background: var(--terra);
+      color: var(--cream);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .blk.members .jb-main {
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+
+    .blk.members .jb-sub {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
 
     /* News */
+    .blk.news {
+      grid-area: news;
+      background: var(--gold);
+      color: var(--brown);
+    }
+
+    .blk.news h2 { margin-bottom: 16px; }
+
     .schedule-item {
       display: flex;
       align-items: center;
-      gap: 20px;
-      padding: 14px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(43, 33, 25, 0.22);
     }
 
     .schedule-item:last-child { border-bottom: none; }
 
     .schedule-item .date {
       font-weight: 800;
-      font-size: 0.95rem;
-      min-width: 100px;
-      color: #fff;
+      font-size: 0.9rem;
+      min-width: 92px;
+      color: var(--brown);
     }
 
     .schedule-item .event {
-      font-size: 0.92rem;
-      color: #fff;
+      font-size: 0.9rem;
+      color: var(--brown);
     }
 
-    /* Right column: join button on top, contents banner below */
-    .right-col {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    /* Join button (→ STORES) */
-    .join-btn {
+    /* Contents (→ members-only page) */
+    .blk.contents {
+      grid-area: contents;
+      background: var(--navy);
+      color: var(--cream);
+      text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      text-decoration: none;
-      background: #fff;
-      color: #fa5514;
-      border-radius: 28px;
-      padding: 24px;
-      transition: background 0.2s, transform 0.2s;
     }
 
-    .join-btn:hover {
-      background: #fff3eb;
-      transform: translateY(-2px);
-    }
+    .blk.contents h2 { font-size: 1.7rem; }
 
-    .join-btn .jb-main {
-      font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-    }
-
-    .join-btn .jb-sub {
-      margin-top: 6px;
-      font-size: 0.76rem;
-      font-weight: 500;
-      opacity: 0.8;
-    }
-
-    /* Contents banner (orange) — half height */
-    .contents-banner {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      text-decoration: none;
-      background: #fa5514;
-      border: none;
-      border-radius: 28px;
-      padding: 28px;
-      color: #fff;
-      transition: background 0.2s, transform 0.2s;
-    }
-
-    .contents-banner:hover {
-      background: #e14710;
-      transform: translateY(-2px);
-    }
-
-    .contents-banner h2 {
-      font-size: 1.4rem;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-
-    .contents-banner p {
+    .blk.contents p {
+      margin-top: 8px;
       font-size: 0.78rem;
-      font-weight: 500;
       opacity: 0.85;
     }
 
-    /* Member — 5-column grid: No. / name / bio stacked per cell */
+    /* Member */
+    .blk.member {
+      grid-area: member;
+      background: var(--red);
+      color: var(--cream);
+    }
+
+    .blk.member h2 { margin-bottom: 24px; }
+
     .member-list {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 28px 20px;
+      gap: 26px 20px;
     }
 
     .member-row {
@@ -221,48 +238,22 @@
     }
 
     .m-num {
-      font-size: 0.68rem;
+      font-size: 0.66rem;
       font-weight: 700;
       letter-spacing: 0.12em;
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(239, 228, 204, 0.65);
     }
 
     .m-name {
       font-size: 0.98rem;
       font-weight: 700;
-      color: #fff;
+      color: var(--cream);
     }
 
     .m-bio {
       font-size: 0.8rem;
       line-height: 1.6;
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    /* Contact links */
-    .link-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 420px;
-    }
-
-    .link-item {
-      display: block;
-      background: transparent;
-      color: #fff;
-      text-decoration: none;
-      padding: 15px 24px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.7);
-      font-size: 0.92rem;
-      font-weight: 700;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .link-item:hover {
-      background: #fff;
-      color: #14100c;
+      color: rgba(239, 228, 204, 0.82);
     }
 
     /* Footer */
@@ -280,19 +271,31 @@
 
     /* Responsive */
     @media (max-width: 900px) {
+      .mosaic {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+          "about members"
+          "news contents"
+          "member member";
+      }
       .member-list { grid-template-columns: repeat(3, 1fr); }
     }
 
     @media (max-width: 700px) {
-      .hero-logo img { width: min(320px, 84vw); }
+      .hero-logo img { width: min(360px, 86vw); }
 
-      .sec-card { padding: 26px 22px; border-radius: 22px; }
-      .sec-card h2 { font-size: 1.7rem; }
+      .mosaic {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "about"
+          "members"
+          "news"
+          "contents"
+          "member";
+      }
 
-      .about h2 { font-size: 2rem; }
-
-      .two-col { grid-template-columns: 1fr; }
-
+      .blk { padding: 28px; }
+      .blk h2 { font-size: 1.7rem; }
       .member-list { grid-template-columns: repeat(2, 1fr); }
 
       .schedule-item {
@@ -314,37 +317,46 @@
   </header>
 
   <main>
-    <section id="about" class="about">
-      <h2>About</h2>
-      <p class="sec-desc">
-        タコス好きによるタコス好きのためのゆるコミュニティ。<br>
-        タコスに興味ある人も、最近気になっちゃってる人も、<br>
-        本場のタコスを楽しみましょ！
-      </p>
-    </section>
-
-    <div class="two-col">
-      <section id="news" class="sec-card">
-        <h2>News</h2>
-        <div id="news-list"></div>
+    <div class="mosaic">
+      <section id="about" class="blk about">
+        <span class="tag">和 · ABOUT</span>
+        <h2>About</h2>
+        <p class="sec-desc">
+          タコス好きによるタコス好きのためのゆるコミュニティ。<br>
+          タコスに興味ある人も、最近気になっちゃってる人も、<br>
+          本場のタコスを楽しみましょ！
+        </p>
+        <span class="kanji">和</span>
       </section>
 
-      <div class="right-col">
-        <a class="join-btn" href="https://tacosclub.stores.jp/" target="_blank" rel="noopener">
-          <span class="jb-main">MEMBERS ONLY</span>
-          <span class="jb-sub">タコス倶楽部に参加（STORES）</span>
-        </a>
-        <a id="contents" class="contents-banner" href="contents.html">
-          <h2>会員限定コンテンツ</h2>
-          <p>members only</p>
-        </a>
-      </div>
-    </div>
+      <a class="blk members" href="https://tacosclub.stores.jp/" target="_blank" rel="noopener">
+        <span class="tag">会 · JOIN</span>
+        <span class="jb-main">MEMBERS ONLY</span>
+        <span class="jb-sub">タコス倶楽部に参加（STORES）</span>
+        <span class="kanji">会</span>
+      </a>
 
-    <section id="members" class="sec-card">
-      <h2>Member</h2>
-      <div class="member-list" id="member-grid"></div>
-    </section>
+      <section id="news" class="blk news">
+        <span class="tag">報 · NEWS</span>
+        <h2>News</h2>
+        <div id="news-list"></div>
+        <span class="kanji">報</span>
+      </section>
+
+      <a id="contents" class="blk contents" href="contents.html">
+        <span class="tag">秘 · CONTENTS</span>
+        <h2>会員限定コンテンツ</h2>
+        <p>members only</p>
+        <span class="kanji">秘</span>
+      </a>
+
+      <section id="members" class="blk member">
+        <span class="tag">衆 · MEMBER</span>
+        <h2>Member</h2>
+        <div class="member-list" id="member-grid"></div>
+        <span class="kanji">衆</span>
+      </section>
+    </div>
   </main>
 
   <footer>
