@@ -16,35 +16,74 @@
       box-sizing: border-box;
     }
 
+    html { scroll-behavior: smooth; }
+
     body {
       font-family: "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
-      color: #40210f;
-      background: #fdf3e7;
+      color: #fff;
+      background: #14100c;
     }
 
-    /* Header */
-    header {
+    /* Fixed photo background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: url('hero.jpg') center / cover no-repeat, #14100c;
+    }
+
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    /* Hero: full-screen white logo */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      padding: 72px 20px 28px;
+      position: relative;
     }
 
-    header h1 {
+    .hero-logo h1 {
       font-family: 'Yellowtail', cursive;
-      font-size: 5rem;
+      font-size: 6rem;
       font-weight: 400;
       line-height: 1.1;
-      color: transparent;
-      -webkit-text-stroke: 2px #fd6405;
+      color: #fff;
       letter-spacing: 0.02em;
+      text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
     }
 
-    header p {
-      margin-top: 12px;
-      font-size: 0.95rem;
+    .hero-logo p {
+      margin-top: 16px;
+      font-size: 1rem;
       font-weight: 700;
-      letter-spacing: 0.25em;
-      color: #40210f;
-      text-transform: uppercase;
+      letter-spacing: 0.45em;
+      text-indent: 0.45em;
+      color: #fff;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-indent: 0.3em;
+      color: rgba(255, 255, 255, 0.8);
+      animation: bob 2s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
     }
 
     /* Navigation */
@@ -53,8 +92,7 @@
       justify-content: center;
       gap: 28px;
       padding: 20px;
-      background: #fdf3e7;
-      border-bottom: 1.5px solid #40210f22;
+      background: rgba(0, 0, 0, 0.75);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -62,74 +100,60 @@
 
     nav a {
       text-decoration: none;
-      color: #40210f;
+      color: #fff;
       font-weight: 700;
       font-size: 0.9rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      transition: color 0.2s;
+      transition: opacity 0.2s;
     }
 
-    nav a:hover {
-      color: #fd6405;
-    }
+    nav a:hover { opacity: 0.6; }
 
     /* Section cards */
     main {
       max-width: 960px;
-      margin: 24px auto 64px;
+      margin: 48px auto 96px;
       padding: 0 20px;
       display: flex;
       flex-direction: column;
-      gap: 32px;
+      gap: 40px;
     }
 
     .sec-card {
-      border: 1.5px solid #40210f;
-      border-radius: 32px;
-      padding: 32px;
-      box-shadow: 0 2px 0 #40210f22;
-    }
-
-    .sec-card.tint-1 { background: #ffd9ac; }
-    .sec-card.tint-2 { background: #ffe9c9; }
-    .sec-card.tint-3 { background: #ff9d5c; }
-    .sec-card.tint-4 { background: #fff3cd; }
-
-    .sec-head {
-      min-width: 0;
-    }
-
-    .sec-title-area {
-      min-width: 0;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 28px;
+      padding: 40px;
+      background: rgba(0, 0, 0, 0.45);
     }
 
     .sec-label {
       display: block;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 500;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
       margin-bottom: 10px;
+      color: rgba(255, 255, 255, 0.75);
     }
 
     .sec-card h2 {
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       font-weight: 800;
-      letter-spacing: 0.01em;
+      letter-spacing: 0.02em;
       line-height: 1.15;
       text-transform: uppercase;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
+      color: #fff;
     }
 
     .sec-desc {
-      font-size: 0.92rem;
-      line-height: 1.9;
+      font-size: 0.94rem;
+      line-height: 2;
+      color: #fff;
     }
 
-    .sec-body {
-      margin-top: 28px;
-    }
+    .sec-body { margin-top: 28px; }
 
     /* Members */
     .member-grid {
@@ -145,16 +169,16 @@
     }
 
     .member-avatar {
-      width: 72px;
-      height: 72px;
-      min-height: 72px;
+      width: 68px;
+      height: 68px;
+      min-height: 68px;
       border-radius: 50%;
-      border: 1.5px solid #40210f;
+      border: 1px solid rgba(255, 255, 255, 0.6);
       background: linear-gradient(135deg, #fd6405 0%, #ff9a44 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 32px;
+      font-size: 30px;
       flex-shrink: 0;
       overflow: hidden;
       position: relative;
@@ -176,56 +200,58 @@
     }
 
     .member-number {
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       font-weight: 700;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.18em;
       margin-bottom: 2px;
+      color: rgba(255, 255, 255, 0.7);
     }
 
     .member-card h3 {
-      font-size: 1.05rem;
+      font-size: 1.02rem;
       font-weight: 700;
       margin-bottom: 4px;
+      color: #fff;
     }
 
     .member-card p {
       font-size: 0.8rem;
       line-height: 1.7;
-      opacity: 0.75;
+      color: rgba(255, 255, 255, 0.75);
     }
 
     .contents-link {
       text-align: center;
-      margin-top: 36px;
+      margin-top: 40px;
     }
 
     .contents-link a {
       display: inline-block;
-      background: #fd6405;
+      background: transparent;
       color: #fff;
       text-decoration: none;
-      border: 1.5px solid #40210f;
-      padding: 18px 72px;
+      border: 1.5px solid #fff;
+      padding: 16px 64px;
       border-radius: 50px;
       font-weight: 800;
-      font-size: 1.2rem;
-      letter-spacing: 0.08em;
+      font-size: 1.1rem;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       line-height: 1.5;
-      transition: transform 0.2s, background 0.2s;
+      transition: background 0.2s, color 0.2s;
     }
 
     .contents-link a:hover {
-      background: #e55a04;
-      transform: translateY(-2px);
+      background: #fff;
+      color: #14100c;
     }
 
     .contents-link a span {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 500;
       text-transform: none;
-      opacity: 0.9;
+      opacity: 0.85;
     }
 
     /* News */
@@ -234,21 +260,21 @@
       align-items: center;
       gap: 20px;
       padding: 14px 0;
-      border-bottom: 1px solid #40210f33;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
     }
 
-    .schedule-item:last-child {
-      border-bottom: none;
-    }
+    .schedule-item:last-child { border-bottom: none; }
 
     .schedule-item .date {
       font-weight: 800;
       font-size: 0.95rem;
       min-width: 110px;
+      color: #fff;
     }
 
     .schedule-item .event {
       font-size: 0.92rem;
+      color: #fff;
     }
 
     /* Contact links */
@@ -261,25 +287,25 @@
 
     .link-item {
       display: block;
-      background: #fff;
-      color: #40210f;
+      background: transparent;
+      color: #fff;
       text-decoration: none;
       padding: 15px 24px;
       border-radius: 14px;
-      border: 1.5px solid #40210f;
+      border: 1px solid rgba(255, 255, 255, 0.7);
       font-size: 0.92rem;
       font-weight: 700;
-      transition: background 0.2s, transform 0.2s;
+      transition: background 0.2s, color 0.2s;
     }
 
     .link-item:hover {
-      background: #ffe9c9;
-      transform: translateY(-2px);
+      background: #fff;
+      color: #14100c;
     }
 
     /* Footer */
     footer {
-      background: #fd6405;
+      background: rgba(0, 0, 0, 0.6);
       color: #fff;
       text-align: center;
       padding: 32px 20px;
@@ -287,19 +313,18 @@
 
     footer p {
       font-size: 0.85rem;
-      opacity: 0.9;
+      opacity: 0.85;
     }
 
     /* Responsive */
     @media (max-width: 700px) {
-      header { padding: 48px 16px 20px; }
-      header h1 { font-size: 3.2rem; -webkit-text-stroke-width: 1.5px; }
+      .hero-logo h1 { font-size: 3.6rem; }
+      .hero-logo p { font-size: 0.85rem; }
 
       nav { gap: 16px; flex-wrap: wrap; }
 
-      .sec-card { padding: 22px; border-radius: 24px; }
-
-      .sec-card h2 { font-size: 1.8rem; }
+      .sec-card { padding: 26px 22px; border-radius: 22px; }
+      .sec-card h2 { font-size: 1.7rem; }
 
       .member-grid { grid-template-columns: 1fr; }
 
@@ -313,9 +338,14 @@
 </head>
 <body>
 
-  <header>
-    <h1>Tacos Club</h1>
-    <p>タコス倶楽部</p>
+  <div class="bg"></div>
+
+  <header class="hero" id="hero">
+    <div class="hero-logo" id="hero-logo">
+      <h1>Tacos Club</h1>
+      <p>タコス倶楽部</p>
+    </div>
+    <div class="hero-scroll">SCROLL</div>
   </header>
 
   <nav>
@@ -327,28 +357,20 @@
   </nav>
 
   <main>
-    <section id="about" class="sec-card tint-1">
-      <div class="sec-head">
-        <div class="sec-title-area">
-          <span class="sec-label">Section 1</span>
-          <h2>About</h2>
-          <p class="sec-desc">
-            タコス好きによるタコス好きのためのゆるコミュニティ。<br>
-            タコスに興味ある人も、最近気になっちゃってる人も、<br>
-            本場のタコスを楽しみましょ！
-          </p>
-        </div>
-      </div>
+    <section id="about" class="sec-card">
+      <span class="sec-label">Section 1</span>
+      <h2>About</h2>
+      <p class="sec-desc">
+        タコス好きによるタコス好きのためのゆるコミュニティ。<br>
+        タコスに興味ある人も、最近気になっちゃってる人も、<br>
+        本場のタコスを楽しみましょ！
+      </p>
     </section>
 
-    <section id="members" class="sec-card tint-2">
-      <div class="sec-head">
-        <div class="sec-title-area">
-          <span class="sec-label">Section 2</span>
-          <h2>Member</h2>
-          <p class="sec-desc">タコス倶楽部の愉快なメンバーたち。</p>
-        </div>
-      </div>
+    <section id="members" class="sec-card">
+      <span class="sec-label">Section 2</span>
+      <h2>Member</h2>
+      <p class="sec-desc">タコス倶楽部の愉快なメンバーたち。</p>
       <div class="sec-body">
         <div class="member-grid" id="member-grid"></div>
         <div class="contents-link">
@@ -357,24 +379,16 @@
       </div>
     </section>
 
-    <section id="news" class="sec-card tint-3">
-      <div class="sec-head">
-        <div class="sec-title-area">
-          <span class="sec-label">Section 3</span>
-          <h2>News</h2>
-          <div id="news-list"></div>
-        </div>
-      </div>
+    <section id="news" class="sec-card">
+      <span class="sec-label">Section 3</span>
+      <h2>News</h2>
+      <div id="news-list"></div>
     </section>
 
-    <section id="contact" class="sec-card tint-4">
-      <div class="sec-head">
-        <div class="sec-title-area">
-          <span class="sec-label">Section 4</span>
-          <h2>Contact</h2>
-          <div class="link-list" id="link-list"></div>
-        </div>
-      </div>
+    <section id="contact" class="sec-card">
+      <span class="sec-label">Section 4</span>
+      <h2>Contact</h2>
+      <div class="link-list" id="link-list"></div>
     </section>
   </main>
 
@@ -384,6 +398,17 @@
   </footer>
 
   <script>
+    // Fade the hero logo out as the user scrolls
+    const heroLogo = document.getElementById('hero-logo');
+    function updateHero() {
+      const fadeEnd = window.innerHeight * 0.6;
+      const t = Math.min(window.scrollY / fadeEnd, 1);
+      heroLogo.style.opacity = String(1 - t);
+      heroLogo.style.transform = `translateY(${window.scrollY * 0.25}px)`;
+    }
+    window.addEventListener('scroll', updateHero, { passive: true });
+    updateHero();
+
     async function loadAndRender() {
       const res = await fetch('data.json?t=' + Date.now());
       const data = await res.json();
