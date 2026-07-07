@@ -198,38 +198,34 @@
       opacity: 0.85;
     }
 
-    /* Member — full-width list: No. / name / bio in one row */
+    /* Member — 5-column grid: No. / name / bio stacked per cell */
     .member-list {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 28px 20px;
     }
 
     .member-row {
-      display: grid;
-      grid-template-columns: 80px 170px 1fr;
-      gap: 16px;
-      align-items: baseline;
-      padding: 15px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
-    .member-row:last-child { border-bottom: none; }
-
     .m-num {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
       letter-spacing: 0.12em;
       color: rgba(255, 255, 255, 0.7);
     }
 
     .m-name {
-      font-size: 1rem;
+      font-size: 0.98rem;
       font-weight: 700;
       color: #fff;
     }
 
     .m-bio {
-      font-size: 0.88rem;
+      font-size: 0.8rem;
       line-height: 1.6;
       color: rgba(255, 255, 255, 0.8);
     }
@@ -274,6 +270,10 @@
     }
 
     /* Responsive */
+    @media (max-width: 900px) {
+      .member-list { grid-template-columns: repeat(3, 1fr); }
+    }
+
     @media (max-width: 700px) {
       .hero-logo img { width: min(320px, 84vw); }
 
@@ -289,12 +289,7 @@
       .contents-banner { padding: 32px 22px; }
       .contents-banner h2 { font-size: 1.9rem; }
 
-      .member-row {
-        grid-template-columns: 62px 1fr;
-        row-gap: 2px;
-        column-gap: 12px;
-      }
-      .m-bio { grid-column: 2; }
+      .member-list { grid-template-columns: repeat(2, 1fr); }
 
       .schedule-item {
         flex-direction: column;
