@@ -345,11 +345,6 @@
       <h2>Member</h2>
       <div class="member-list" id="member-grid"></div>
     </section>
-
-    <section id="contact" class="sec-card">
-      <h2>Contact</h2>
-      <div class="link-list" id="link-list"></div>
-    </section>
   </main>
 
   <footer>
@@ -398,15 +393,6 @@
             <span class="date">${n.date}</span>
             <span class="event">${n.event}</span>
           </div>`;
-      });
-
-      const linkList = document.getElementById('link-list');
-      linkList.innerHTML = '';
-      (data.links || []).forEach(l => {
-        if (!l.url) return;
-        const isExternal = /^https?:\/\//.test(l.url);
-        const target = isExternal ? ' target="_blank" rel="noopener"' : '';
-        linkList.innerHTML += `<a class="link-item" href="${l.url}"${target}>${l.label || l.url}</a>`;
       });
     }
     loadAndRender();
