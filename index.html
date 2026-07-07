@@ -6,9 +6,6 @@
   <title>タコス倶楽部</title>
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="icon" href="icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -43,7 +40,6 @@
     .hero {
       height: 100vh;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
@@ -55,23 +51,6 @@
       height: auto;
       display: block;
       filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.5));
-    }
-
-    .hero-scroll {
-      position: absolute;
-      bottom: 36px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.7rem;
-      letter-spacing: 0.3em;
-      text-indent: 0.3em;
-      color: rgba(255, 255, 255, 0.8);
-      animation: bob 2s ease-in-out infinite;
-    }
-
-    @keyframes bob {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(8px); }
     }
 
     /* Navigation */
@@ -98,10 +77,10 @@
 
     nav a:hover { opacity: 0.6; }
 
-    /* Section cards */
+    /* Layout */
     main {
       max-width: 960px;
-      margin: 48px auto 96px;
+      margin: 64px auto 96px;
       padding: 0 20px;
       display: flex;
       flex-direction: column;
@@ -113,16 +92,6 @@
       border-radius: 28px;
       padding: 40px;
       background: rgba(0, 0, 0, 0.45);
-    }
-
-    .sec-label {
-      display: block;
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      color: rgba(255, 255, 255, 0.75);
     }
 
     .sec-card h2 {
@@ -141,106 +110,29 @@
       color: #fff;
     }
 
-    .sec-body { margin-top: 28px; }
-
-    /* Members */
-    .member-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 28px 32px;
-    }
-
-    .member-card {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-    }
-
-    .member-avatar {
-      width: 68px;
-      height: 68px;
-      min-height: 68px;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      background: linear-gradient(135deg, #fd6405 0%, #ff9a44 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-      flex-shrink: 0;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .member-avatar img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .member-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .member-number {
-      font-size: 0.62rem;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      margin-bottom: 2px;
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    .member-card h3 {
-      font-size: 1.02rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-      color: #fff;
-    }
-
-    .member-card p {
-      font-size: 0.8rem;
-      line-height: 1.7;
-      color: rgba(255, 255, 255, 0.75);
-    }
-
-    .contents-link {
+    /* About — plain, centered on background */
+    .about {
       text-align: center;
-      margin-top: 40px;
+      padding: 24px 20px 8px;
     }
 
-    .contents-link a {
-      display: inline-block;
-      background: transparent;
-      color: #fff;
-      text-decoration: none;
-      border: 1.5px solid #fff;
-      padding: 16px 64px;
-      border-radius: 50px;
+    .about h2 {
+      font-size: 2.4rem;
       font-weight: 800;
-      font-size: 1.1rem;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.03em;
       text-transform: uppercase;
-      line-height: 1.5;
-      transition: background 0.2s, color 0.2s;
+      margin-bottom: 24px;
     }
 
-    .contents-link a:hover {
-      background: #fff;
-      color: #14100c;
+    /* News + Contents side by side */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: stretch;
     }
 
-    .contents-link a span {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 500;
-      text-transform: none;
-      opacity: 0.85;
-    }
+    .two-col > * { margin: 0; }
 
     /* News */
     .schedule-item {
@@ -256,13 +148,90 @@
     .schedule-item .date {
       font-weight: 800;
       font-size: 0.95rem;
-      min-width: 110px;
+      min-width: 100px;
       color: #fff;
     }
 
     .schedule-item .event {
       font-size: 0.92rem;
       color: #fff;
+    }
+
+    /* Contents banner (orange) */
+    .contents-banner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      text-decoration: none;
+      background: #fd6405;
+      border: none;
+      border-radius: 28px;
+      padding: 40px;
+      color: #fff;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .contents-banner:hover {
+      background: #e55a04;
+      transform: translateY(-2px);
+    }
+
+    .contents-banner h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .contents-banner p {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .contents-banner p span {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+
+    /* Member — full-width list: No. / name / bio in one row */
+    .member-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .member-row {
+      display: grid;
+      grid-template-columns: 80px 170px 1fr;
+      gap: 16px;
+      align-items: baseline;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .member-row:last-child { border-bottom: none; }
+
+    .m-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .m-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .m-bio {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.8);
     }
 
     /* Contact links */
@@ -313,7 +282,19 @@
       .sec-card { padding: 26px 22px; border-radius: 22px; }
       .sec-card h2 { font-size: 1.7rem; }
 
-      .member-grid { grid-template-columns: 1fr; }
+      .about h2 { font-size: 2rem; }
+
+      .two-col { grid-template-columns: 1fr; }
+
+      .contents-banner { padding: 32px 22px; }
+      .contents-banner h2 { font-size: 1.9rem; }
+
+      .member-row {
+        grid-template-columns: 62px 1fr;
+        row-gap: 2px;
+        column-gap: 12px;
+      }
+      .m-bio { grid-column: 2; }
 
       .schedule-item {
         flex-direction: column;
@@ -331,7 +312,6 @@
     <div class="hero-logo" id="hero-logo">
       <img src="logo-white.png" alt="タコス倶楽部">
     </div>
-    <div class="hero-scroll">SCROLL</div>
   </header>
 
   <nav>
@@ -343,8 +323,7 @@
   </nav>
 
   <main>
-    <section id="about" class="sec-card">
-      <span class="sec-label">Section 1</span>
+    <section id="about" class="about">
       <h2>About</h2>
       <p class="sec-desc">
         タコス好きによるタコス好きのためのゆるコミュニティ。<br>
@@ -353,26 +332,24 @@
       </p>
     </section>
 
-    <section id="members" class="sec-card">
-      <span class="sec-label">Section 2</span>
-      <h2>Member</h2>
-      <p class="sec-desc">タコス倶楽部の愉快なメンバーたち。</p>
-      <div class="sec-body">
-        <div class="member-grid" id="member-grid"></div>
-        <div class="contents-link">
-          <a href="contents.html">Contents<span>(members only)</span></a>
-        </div>
-      </div>
-    </section>
+    <div class="two-col">
+      <section id="news" class="sec-card">
+        <h2>News</h2>
+        <div id="news-list"></div>
+      </section>
 
-    <section id="news" class="sec-card">
-      <span class="sec-label">Section 3</span>
-      <h2>News</h2>
-      <div id="news-list"></div>
+      <a id="contents" class="contents-banner" href="contents.html">
+        <h2>Contents</h2>
+        <p>会員限定コンテンツ<span>members only</span></p>
+      </a>
+    </div>
+
+    <section id="members" class="sec-card">
+      <h2>Member</h2>
+      <div class="member-list" id="member-grid"></div>
     </section>
 
     <section id="contact" class="sec-card">
-      <span class="sec-label">Section 4</span>
       <h2>Contact</h2>
       <div class="link-list" id="link-list"></div>
     </section>
@@ -408,17 +385,11 @@
       });
       data.members.forEach((m, i) => {
         const num = m.number || String(i + 1).padStart(2, '0');
-        const avatarContent = m.image
-          ? `<img src="${m.image}" alt="${m.name}">`
-          : m.emoji;
         memberGrid.innerHTML += `
-          <div class="member-card">
-            <div class="member-avatar">${avatarContent}</div>
-            <div class="member-info">
-              <div class="member-number">No.${num}</div>
-              <h3>${m.name}</h3>
-              <p>${m.bio}</p>
-            </div>
+          <div class="member-row">
+            <span class="m-num">No.${num}</span>
+            <span class="m-name">${m.name}</span>
+            <span class="m-bio">${m.bio}</span>
           </div>`;
       });
 
