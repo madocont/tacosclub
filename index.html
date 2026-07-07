@@ -97,22 +97,7 @@
     .sec-card.tint-4 { background: #fff3cd; }
 
     .sec-head {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: 32px;
-      align-items: start;
-    }
-
-    .sec-photo {
-      border-radius: 18px;
-      border: 1.5px solid #40210f;
-      aspect-ratio: 4 / 3;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 72px;
-      background: linear-gradient(135deg, #fd6405 0%, #ffb066 100%);
-      overflow: hidden;
+      min-width: 0;
     }
 
     .sec-title-area {
@@ -314,12 +299,6 @@
 
       .sec-card { padding: 22px; border-radius: 24px; }
 
-      .sec-head {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
-
-      .sec-photo { aspect-ratio: 16 / 9; font-size: 56px; }
       .sec-card h2 { font-size: 1.8rem; }
 
       .member-grid { grid-template-columns: 1fr; }
@@ -350,7 +329,6 @@
   <main>
     <section id="about" class="sec-card tint-1">
       <div class="sec-head">
-        <div class="sec-photo">🌮</div>
         <div class="sec-title-area">
           <span class="sec-label">Section 1</span>
           <h2>About</h2>
@@ -365,7 +343,6 @@
 
     <section id="members" class="sec-card tint-2">
       <div class="sec-head">
-        <div class="sec-photo">🫂</div>
         <div class="sec-title-area">
           <span class="sec-label">Section 2</span>
           <h2>Member</h2>
@@ -382,7 +359,6 @@
 
     <section id="news" class="sec-card tint-3">
       <div class="sec-head">
-        <div class="sec-photo">📰</div>
         <div class="sec-title-area">
           <span class="sec-label">Section 3</span>
           <h2>News</h2>
@@ -393,7 +369,6 @@
 
     <section id="contact" class="sec-card tint-4">
       <div class="sec-head">
-        <div class="sec-photo">💌</div>
         <div class="sec-title-area">
           <span class="sec-label">Section 4</span>
           <h2>Contact</h2>
