@@ -288,6 +288,133 @@
 
     .content-card h3 a:hover { opacity: 0.6; }
 
+    /* Taco type search (種類) */
+    .taco-search {
+      background: #fff8ec;
+      border-radius: 20px;
+      padding: 26px 24px;
+      box-shadow: 0 4px 16px rgba(43, 33, 25, 0.08);
+      margin-bottom: 28px;
+    }
+
+    .taco-search input[type="search"] {
+      width: 100%;
+      padding: 13px 18px;
+      border: 2px solid rgba(43, 33, 25, 0.25);
+      border-radius: 12px;
+      background: #fff;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 1rem;
+      color: var(--brown);
+      transition: border-color 0.2s;
+    }
+
+    .taco-search input[type="search"]:focus {
+      border-color: var(--terra);
+      outline: none;
+    }
+
+    .filter-group { margin-top: 18px; }
+
+    .filter-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: rgba(43, 33, 25, 0.6);
+      margin-bottom: 8px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 8px 18px;
+      border-radius: 50px;
+      border: 2px solid var(--brown);
+      background: transparent;
+      color: var(--brown);
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, transform 0.1s;
+    }
+
+    .chip:hover { transform: translateY(-1px); }
+
+    .chip.on-meat { background: var(--terra); border-color: var(--terra); color: var(--cream); }
+    .chip.on-method { background: var(--sage); border-color: var(--sage); color: var(--cream); }
+
+    .taco-count {
+      margin: 20px 0 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: rgba(43, 33, 25, 0.6);
+    }
+
+    .taco-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+    }
+
+    .taco-card {
+      background: #fff8ec;
+      border-radius: 16px;
+      padding: 22px;
+      border-top: 6px solid var(--terra);
+      box-shadow: 0 4px 16px rgba(43, 33, 25, 0.08);
+    }
+
+    .taco-card:nth-child(6n+2) { border-top-color: var(--sage); }
+    .taco-card:nth-child(6n+3) { border-top-color: var(--navy); }
+    .taco-card:nth-child(6n+4) { border-top-color: var(--gold); }
+    .taco-card:nth-child(6n+5) { border-top-color: var(--red); }
+    .taco-card:nth-child(6n+6) { border-top-color: var(--brown); }
+
+    .taco-card h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--brown);
+      margin-bottom: 8px;
+    }
+
+    .taco-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .taco-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 50px;
+      color: var(--cream);
+      background: var(--terra);
+    }
+
+    .taco-tag.tag-method { background: var(--sage); }
+
+    .taco-card p {
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: rgba(43, 33, 25, 0.85);
+    }
+
+    .articles-heading {
+      margin: 44px 0 16px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--brown);
+      padding-bottom: 6px;
+      border-bottom: 2px solid rgba(43, 33, 25, 0.2);
+    }
+
     footer {
       background: var(--red);
       color: var(--cream);
@@ -389,12 +516,36 @@
                 <h3><a href="content-detail.html?id=${c.id}">${c.title}</a></h3>
               </div>`).join('')}</div>`
           : `<div class="category-empty">記事はまだありません</div>`;
-        container.innerHTML = `
-          <div class="category-heading">
-            <h3>${selected}</h3>
-            <a href="contents.html" class="category-back">← カテゴリ一覧</a>
-          </div>
-          ${cards}`;
+
+        if (selected === '種類') {
+          container.innerHTML = `
+            <div class="category-heading">
+              <h3>${selected}</h3>
+              <a href="contents.html" class="category-back">← カテゴリ一覧</a>
+            </div>
+            <div class="taco-search">
+              <input type="search" id="taco-q" placeholder="タコスの名前や食材で検索…">
+              <div class="filter-group">
+                <div class="filter-label">肉・具材で絞る</div>
+                <div class="chips" id="meat-chips"></div>
+              </div>
+              <div class="filter-group">
+                <div class="filter-label">調理法で絞る</div>
+                <div class="chips" id="method-chips"></div>
+              </div>
+            </div>
+            <div class="taco-count" id="taco-count"></div>
+            <div class="taco-grid" id="taco-grid"></div>
+            ${items.length ? `<div class="articles-heading">読みもの</div>${cards}` : ''}`;
+          initTacoSearch(data.tacoTypes || []);
+        } else {
+          container.innerHTML = `
+            <div class="category-heading">
+              <h3>${selected}</h3>
+              <a href="contents.html" class="category-back">← カテゴリ一覧</a>
+            </div>
+            ${cards}`;
+        }
       } else {
         container.innerHTML = `<div class="category-buttons">${
           CATEGORIES.map(cat =>
@@ -405,6 +556,65 @@
           ).join('')
         }</div>`;
       }
+    }
+
+    // ---- Taco type search (種類) ----
+    function initTacoSearch(types) {
+      const meats = [...new Set(types.map(t => t.meat))];
+      const methods = [...new Set(types.flatMap(t => t.methods))];
+      const state = { q: '', meats: new Set(), methods: new Set() };
+
+      const meatWrap = document.getElementById('meat-chips');
+      const methodWrap = document.getElementById('method-chips');
+
+      meatWrap.innerHTML = meats.map(m =>
+        `<button class="chip" data-kind="meat" data-val="${m}">${m}</button>`).join('');
+      methodWrap.innerHTML = methods.map(m =>
+        `<button class="chip" data-kind="method" data-val="${m}">${m}</button>`).join('');
+
+      document.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const kind = chip.dataset.kind;
+          const val = chip.dataset.val;
+          const set = kind === 'meat' ? state.meats : state.methods;
+          const cls = kind === 'meat' ? 'on-meat' : 'on-method';
+          if (set.has(val)) { set.delete(val); chip.classList.remove(cls); }
+          else { set.add(val); chip.classList.add(cls); }
+          render();
+        });
+      });
+
+      document.getElementById('taco-q').addEventListener('input', e => {
+        state.q = e.target.value.trim().toLowerCase();
+        render();
+      });
+
+      function render() {
+        const hits = types.filter(t => {
+          if (state.meats.size && !state.meats.has(t.meat)) return false;
+          if (state.methods.size && ![...state.methods].every(m => t.methods.includes(m))) return false;
+          if (state.q) {
+            const hay = `${t.name} ${t.meat} ${t.methods.join(' ')} ${t.desc}`.toLowerCase();
+            if (!hay.includes(state.q)) return false;
+          }
+          return true;
+        });
+
+        document.getElementById('taco-count').textContent =
+          hits.length ? `${hits.length}種類のタコス` : '該当なし — 条件をゆるめてみてください';
+
+        document.getElementById('taco-grid').innerHTML = hits.map(t => `
+          <div class="taco-card">
+            <h4>${t.name}</h4>
+            <div class="taco-tags">
+              <span class="taco-tag">${t.meat}</span>
+              ${t.methods.map(m => `<span class="taco-tag tag-method">${m}</span>`).join('')}
+            </div>
+            <p>${t.desc}</p>
+          </div>`).join('');
+      }
+
+      render();
     }
   </script>
 </body>
