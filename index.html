@@ -53,30 +53,6 @@
       filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.5));
     }
 
-    /* Navigation */
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 28px;
-      padding: 20px;
-      background: #fd6405;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: #fff;
-      font-weight: 700;
-      font-size: 0.9rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      transition: opacity 0.2s;
-    }
-
-    nav a:hover { opacity: 0.6; }
-
     /* Layout */
     main {
       max-width: 960px;
@@ -157,8 +133,49 @@
       color: #fff;
     }
 
-    /* Contents banner (orange) */
+    /* Right column: join button on top, contents banner below */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Join button (→ STORES) */
+    .join-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      text-decoration: none;
+      background: #fff;
+      color: #fd6405;
+      border-radius: 28px;
+      padding: 24px;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .join-btn:hover {
+      background: #fff3eb;
+      transform: translateY(-2px);
+    }
+
+    .join-btn .jb-main {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .join-btn .jb-sub {
+      margin-top: 6px;
+      font-size: 0.76rem;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+
+    /* Contents banner (orange) — half height */
     .contents-banner {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -168,7 +185,7 @@
       background: #fd6405;
       border: none;
       border-radius: 28px;
-      padding: 40px;
+      padding: 28px;
       color: #fff;
       transition: background 0.2s, transform 0.2s;
     }
@@ -179,20 +196,12 @@
     }
 
     .contents-banner h2 {
-      font-size: 2.2rem;
+      font-size: 1.4rem;
       font-weight: 800;
-      text-transform: uppercase;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .contents-banner p {
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
-
-    .contents-banner p span {
-      display: block;
-      margin-top: 4px;
       font-size: 0.78rem;
       font-weight: 500;
       opacity: 0.85;
@@ -277,17 +286,12 @@
     @media (max-width: 700px) {
       .hero-logo img { width: min(320px, 84vw); }
 
-      nav { gap: 16px; flex-wrap: wrap; }
-
       .sec-card { padding: 26px 22px; border-radius: 22px; }
       .sec-card h2 { font-size: 1.7rem; }
 
       .about h2 { font-size: 2rem; }
 
       .two-col { grid-template-columns: 1fr; }
-
-      .contents-banner { padding: 32px 22px; }
-      .contents-banner h2 { font-size: 1.9rem; }
 
       .member-list { grid-template-columns: repeat(2, 1fr); }
 
@@ -309,14 +313,6 @@
     </div>
   </header>
 
-  <nav>
-    <a href="#about">About</a>
-    <a href="#members">Member</a>
-    <a href="contents.html">Contents</a>
-    <a href="#news">News</a>
-    <a href="#contact">Contact</a>
-  </nav>
-
   <main>
     <section id="about" class="about">
       <h2>About</h2>
@@ -333,10 +329,16 @@
         <div id="news-list"></div>
       </section>
 
-      <a id="contents" class="contents-banner" href="contents.html">
-        <h2>Contents</h2>
-        <p>会員限定コンテンツ<span>members only</span></p>
-      </a>
+      <div class="right-col">
+        <a class="join-btn" href="https://STORES-URL-HERE" target="_blank" rel="noopener">
+          <span class="jb-main">入会する</span>
+          <span class="jb-sub">タコス倶楽部に参加（STORES）</span>
+        </a>
+        <a id="contents" class="contents-banner" href="contents.html">
+          <h2>会員限定コンテンツ</h2>
+          <p>members only</p>
+        </a>
+      </div>
     </div>
 
     <section id="members" class="sec-card">
