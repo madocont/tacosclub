@@ -516,45 +516,40 @@
                 <h3><a href="content-detail.html?id=${c.id}">${c.title}</a></h3>
               </div>`).join('')}</div>`
           : `<div class="category-empty">記事はまだありません</div>`;
-
-        if (selected === '種類') {
-          container.innerHTML = `
-            <div class="category-heading">
-              <h3>${selected}</h3>
-              <a href="contents.html" class="category-back">← カテゴリ一覧</a>
-            </div>
-            <div class="taco-search">
-              <input type="search" id="taco-q" placeholder="タコスの名前や食材で検索…">
-              <div class="filter-group">
-                <div class="filter-label">肉・具材で絞る</div>
-                <div class="chips" id="meat-chips"></div>
-              </div>
-              <div class="filter-group">
-                <div class="filter-label">調理法で絞る</div>
-                <div class="chips" id="method-chips"></div>
-              </div>
-            </div>
-            <div class="taco-count" id="taco-count"></div>
-            <div class="taco-grid" id="taco-grid"></div>
-            ${items.length ? `<div class="articles-heading">読みもの</div>${cards}` : ''}`;
-          initTacoSearch(data.tacoTypes || []);
-        } else {
-          container.innerHTML = `
-            <div class="category-heading">
-              <h3>${selected}</h3>
-              <a href="contents.html" class="category-back">← カテゴリ一覧</a>
-            </div>
-            ${cards}`;
-        }
+        container.innerHTML = `
+          <div class="category-heading">
+            <h3>${selected}</h3>
+            <a href="contents.html" class="category-back">← カテゴリ一覧</a>
+          </div>
+          ${cards}`;
       } else {
-        container.innerHTML = `<div class="category-buttons">${
-          CATEGORIES.map(cat =>
-            `<a class="category-btn" href="contents.html?cat=${encodeURIComponent(cat)}">
-               <span class="cat-name">${cat}</span>
-               <span class="cat-kanji">${cat.charAt(0)}</span>
-             </a>`
-          ).join('')
-        }</div>`;
+        // Members content home: taco search + category browse
+        container.innerHTML = `
+          <div class="taco-search">
+            <input type="search" id="taco-q" placeholder="タコスの名前や食材で検索…">
+            <div class="filter-group">
+              <div class="filter-label">肉・具材で絞る</div>
+              <div class="chips" id="meat-chips"></div>
+            </div>
+            <div class="filter-group">
+              <div class="filter-label">調理法で絞る</div>
+              <div class="chips" id="method-chips"></div>
+            </div>
+          </div>
+          <div class="taco-count" id="taco-count"></div>
+          <div class="taco-grid" id="taco-grid"></div>
+          <div id="cat-browse">
+            <div class="articles-heading">カテゴリから探す</div>
+            <div class="category-buttons">${
+              CATEGORIES.map(cat =>
+                `<a class="category-btn" href="contents.html?cat=${encodeURIComponent(cat)}">
+                   <span class="cat-name">${cat}</span>
+                   <span class="cat-kanji">${cat.charAt(0)}</span>
+                 </a>`
+              ).join('')
+            }</div>
+          </div>`;
+        initTacoSearch(data.tacoTypes || []);
       }
     }
 
@@ -590,6 +585,18 @@
       });
 
       function render() {
+        const active = state.q || state.meats.size || state.methods.size;
+        const browse = document.getElementById('cat-browse');
+        const grid = document.getElementById('taco-grid');
+        const count = document.getElementById('taco-count');
+
+        // Show category browse by default; show taco results when searching
+        if (browse) browse.style.display = active ? 'none' : '';
+        grid.style.display = active ? '' : 'none';
+        count.style.display = active ? '' : 'none';
+
+        if (!active) { grid.innerHTML = ''; count.textContent = ''; return; }
+
         const hits = types.filter(t => {
           if (state.meats.size && !state.meats.has(t.meat)) return false;
           if (state.methods.size && ![...state.methods].every(m => t.methods.includes(m))) return false;
@@ -600,10 +607,10 @@
           return true;
         });
 
-        document.getElementById('taco-count').textContent =
+        count.textContent =
           hits.length ? `${hits.length}種類のタコス` : '該当なし — 条件をゆるめてみてください';
 
-        document.getElementById('taco-grid').innerHTML = hits.map(t => `
+        grid.innerHTML = hits.map(t => `
           <div class="taco-card">
             <h4>${t.name}</h4>
             <div class="taco-tags">
