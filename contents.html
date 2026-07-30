@@ -363,11 +363,20 @@
     }
 
     .taco-card {
+      display: block;
       background: #fff8ec;
       border-radius: 16px;
       padding: 22px;
       border-top: 6px solid var(--terra);
       box-shadow: 0 4px 16px rgba(43, 33, 25, 0.08);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .taco-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 22px rgba(43, 33, 25, 0.14);
     }
 
     .taco-card:nth-child(6n+2) { border-top-color: var(--sage); }
@@ -383,13 +392,6 @@
       margin-bottom: 8px;
     }
 
-    .taco-card h4 a {
-      color: var(--brown);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-
-    .taco-card h4 a:hover { opacity: 0.6; }
 
     .taco-tags {
       display: flex;
@@ -629,7 +631,8 @@
           const tTortillas = asList(t.tortilla);
           if (state.meats.size && !tMeats.some(m => state.meats.has(m))) return false;
           if (state.methods.size && ![...state.methods].every(m => t.methods.includes(m))) return false;
-          if (state.tortillas.size && !tTortillas.some(v => state.tortillas.has(v))) return false;
+          // Tortilla is exclusive: 小麦粉 alone hides types that also use コーン
+          if (state.tortillas.size && !tTortillas.every(v => state.tortillas.has(v))) return false;
           if (state.q) {
             const hay = `${t.name} ${tMeats.join(' ')} ${t.methods.join(' ')} ${tTortillas.join(' ')} ${t.region || ''} ${t.desc}`.toLowerCase();
             if (!hay.includes(state.q)) return false;
@@ -641,8 +644,8 @@
           hits.length ? `${hits.length}種類のタコス` : '該当なし — 条件をゆるめてみてください';
 
         grid.innerHTML = hits.map(t => `
-          <div class="taco-card">
-            <h4><a href="taco-detail.html?id=${t.id}">${t.name}</a></h4>
+          <a class="taco-card" href="taco-detail.html?id=${t.id}">
+            <h4>${t.name}</h4>
             ${t.region ? `<div class="taco-region">${t.region}</div>` : ''}
             <div class="taco-tags">
               ${asList(t.meat).map(m => `<span class="taco-tag">${m}</span>`).join('')}
@@ -650,7 +653,7 @@
               ${asList(t.tortilla).map(v => `<span class="taco-tag tag-tortilla">${v}</span>`).join('')}
             </div>
             <p>${t.desc}</p>
-          </div>`).join('');
+          </a>`).join('');
       }
 
       render();
