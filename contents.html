@@ -347,6 +347,7 @@
 
     .chip.on-meat { background: var(--terra); border-color: var(--terra); color: var(--cream); }
     .chip.on-method { background: var(--sage); border-color: var(--sage); color: var(--cream); }
+    .chip.on-tortilla { background: var(--navy); border-color: var(--navy); color: var(--cream); }
 
     .taco-count {
       margin: 20px 0 14px;
@@ -399,6 +400,15 @@
     }
 
     .taco-tag.tag-method { background: var(--sage); }
+    .taco-tag.tag-tortilla { background: var(--navy); }
+
+    .taco-region {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: rgba(43, 33, 25, 0.55);
+      margin-bottom: 8px;
+    }
 
     .taco-card p {
       font-size: 0.85rem;
@@ -535,6 +545,10 @@
               <div class="filter-label">調理法で絞る</div>
               <div class="chips" id="method-chips"></div>
             </div>
+            <div class="filter-group">
+              <div class="filter-label">トルティージャで絞る</div>
+              <div class="chips" id="tortilla-chips"></div>
+            </div>
           </div>
           <div class="taco-count" id="taco-count"></div>
           <div class="taco-grid" id="taco-grid"></div>
@@ -555,26 +569,31 @@
 
     // ---- Taco type search (種類) ----
     function initTacoSearch(types) {
-      const meats = [...new Set(types.map(t => t.meat))];
+      // meat / tortilla may be a single value or a list
+      const asList = v => Array.isArray(v) ? v : (v ? [v] : []);
+
+      const meats = [...new Set(types.flatMap(t => asList(t.meat)))];
       const methods = [...new Set(types.flatMap(t => t.methods))];
-      const state = { q: '', meats: new Set(), methods: new Set() };
+      const tortillas = [...new Set(types.flatMap(t => asList(t.tortilla)))];
+      const state = { q: '', meats: new Set(), methods: new Set(), tortillas: new Set() };
 
-      const meatWrap = document.getElementById('meat-chips');
-      const methodWrap = document.getElementById('method-chips');
+      const groups = {
+        meat: { set: state.meats, cls: 'on-meat', wrap: 'meat-chips', vals: meats },
+        method: { set: state.methods, cls: 'on-method', wrap: 'method-chips', vals: methods },
+        tortilla: { set: state.tortillas, cls: 'on-tortilla', wrap: 'tortilla-chips', vals: tortillas },
+      };
 
-      meatWrap.innerHTML = meats.map(m =>
-        `<button class="chip" data-kind="meat" data-val="${m}">${m}</button>`).join('');
-      methodWrap.innerHTML = methods.map(m =>
-        `<button class="chip" data-kind="method" data-val="${m}">${m}</button>`).join('');
+      Object.entries(groups).forEach(([kind, g]) => {
+        document.getElementById(g.wrap).innerHTML = g.vals.map(v =>
+          `<button class="chip" data-kind="${kind}" data-val="${v}">${v}</button>`).join('');
+      });
 
       document.querySelectorAll('.chip').forEach(chip => {
         chip.addEventListener('click', () => {
-          const kind = chip.dataset.kind;
+          const g = groups[chip.dataset.kind];
           const val = chip.dataset.val;
-          const set = kind === 'meat' ? state.meats : state.methods;
-          const cls = kind === 'meat' ? 'on-meat' : 'on-method';
-          if (set.has(val)) { set.delete(val); chip.classList.remove(cls); }
-          else { set.add(val); chip.classList.add(cls); }
+          if (g.set.has(val)) { g.set.delete(val); chip.classList.remove(g.cls); }
+          else { g.set.add(val); chip.classList.add(g.cls); }
           render();
         });
       });
@@ -585,7 +604,7 @@
       });
 
       function render() {
-        const active = state.q || state.meats.size || state.methods.size;
+        const active = state.q || state.meats.size || state.methods.size || state.tortillas.size;
         const browse = document.getElementById('cat-browse');
         const grid = document.getElementById('taco-grid');
         const count = document.getElementById('taco-count');
@@ -598,10 +617,13 @@
         if (!active) { grid.innerHTML = ''; count.textContent = ''; return; }
 
         const hits = types.filter(t => {
-          if (state.meats.size && !state.meats.has(t.meat)) return false;
+          const tMeats = asList(t.meat);
+          const tTortillas = asList(t.tortilla);
+          if (state.meats.size && !tMeats.some(m => state.meats.has(m))) return false;
           if (state.methods.size && ![...state.methods].every(m => t.methods.includes(m))) return false;
+          if (state.tortillas.size && !tTortillas.some(v => state.tortillas.has(v))) return false;
           if (state.q) {
-            const hay = `${t.name} ${t.meat} ${t.methods.join(' ')} ${t.desc}`.toLowerCase();
+            const hay = `${t.name} ${tMeats.join(' ')} ${t.methods.join(' ')} ${tTortillas.join(' ')} ${t.region || ''} ${t.desc}`.toLowerCase();
             if (!hay.includes(state.q)) return false;
           }
           return true;
@@ -613,9 +635,11 @@
         grid.innerHTML = hits.map(t => `
           <div class="taco-card">
             <h4>${t.name}</h4>
+            ${t.region ? `<div class="taco-region">${t.region}</div>` : ''}
             <div class="taco-tags">
-              <span class="taco-tag">${t.meat}</span>
+              ${asList(t.meat).map(m => `<span class="taco-tag">${m}</span>`).join('')}
               ${t.methods.map(m => `<span class="taco-tag tag-method">${m}</span>`).join('')}
+              ${asList(t.tortilla).map(v => `<span class="taco-tag tag-tortilla">${v}</span>`).join('')}
             </div>
             <p>${t.desc}</p>
           </div>`).join('');
