@@ -383,6 +383,14 @@
       margin-bottom: 8px;
     }
 
+    .taco-card h4 a {
+      color: var(--brown);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .taco-card h4 a:hover { opacity: 0.6; }
+
     .taco-tags {
       display: flex;
       flex-wrap: wrap;
@@ -538,16 +546,16 @@
           <div class="taco-search">
             <input type="search" id="taco-q" placeholder="タコスの名前や食材で検索…">
             <div class="filter-group">
+              <div class="filter-label">トルティージャで絞る</div>
+              <div class="chips" id="tortilla-chips"></div>
+            </div>
+            <div class="filter-group">
               <div class="filter-label">肉・具材で絞る</div>
               <div class="chips" id="meat-chips"></div>
             </div>
             <div class="filter-group">
               <div class="filter-label">調理法で絞る</div>
               <div class="chips" id="method-chips"></div>
-            </div>
-            <div class="filter-group">
-              <div class="filter-label">トルティージャで絞る</div>
-              <div class="chips" id="tortilla-chips"></div>
             </div>
           </div>
           <div class="taco-count" id="taco-count"></div>
@@ -634,7 +642,7 @@
 
         grid.innerHTML = hits.map(t => `
           <div class="taco-card">
-            <h4>${t.name}</h4>
+            <h4><a href="taco-detail.html?id=${t.id}">${t.name}</a></h4>
             ${t.region ? `<div class="taco-region">${t.region}</div>` : ''}
             <div class="taco-tags">
               ${asList(t.meat).map(m => `<span class="taco-tag">${m}</span>`).join('')}
