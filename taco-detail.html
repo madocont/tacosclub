@@ -12,25 +12,27 @@
   <style>
     :root {
       --cream: #efe4cc;
+      --orange: #e8792f;
       --terra: #cf4f2b;
       --sage:  #6d7b50;
       --navy:  #23303b;
       --brown: #2b2119;
+      --ink:   #111;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Zen Kaku Gothic New', sans-serif;
-      color: var(--brown);
-      background: var(--terra);
+      color: var(--ink);
+      background: var(--orange);
       min-height: 100vh;
     }
 
     .wrap {
       max-width: 760px;
       margin: 0 auto;
-      padding: 32px 20px 60px;
+      padding: 26px 20px 56px;
     }
 
     .top-back {
@@ -39,49 +41,61 @@
       text-decoration: none;
       font-weight: 700;
       font-size: 0.9rem;
-      opacity: 0.9;
-      margin-bottom: 22px;
+      opacity: 0.92;
+      margin-bottom: 18px;
       transition: opacity 0.2s;
     }
 
     .top-back:hover { opacity: 1; }
 
-    .detail-card {
+    .card {
       background: #fff;
-      border-radius: 28px;
-      padding: 44px 40px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+      border: 2px solid var(--ink);
+      border-radius: 32px;
+      padding: 42px 44px;
     }
 
-    .detail-title {
-      text-align: center;
+    /* name + button + feature, with the photo on the right */
+    .head {
+      display: grid;
+      grid-template-columns: 1fr 210px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .taco-name {
       font-size: 1.7rem;
       font-weight: 700;
-      color: #222;
-      line-height: 1.4;
+      line-height: 1.35;
+      margin-bottom: 10px;
     }
 
-    .detail-region {
-      text-align: center;
-      margin-top: 8px;
-      font-size: 0.85rem;
+    .feature {
+      font-size: 1rem;
       font-weight: 700;
-      letter-spacing: 0.06em;
-      color: rgba(43, 33, 25, 0.55);
+      line-height: 1.9;
+      margin-bottom: 18px;
     }
 
-    .detail-tags {
+    .region {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: rgba(17, 17, 17, 0.5);
+      margin-bottom: 14px;
+    }
+
+    /* the original tag buttons */
+    .tags {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      justify-content: center;
-      margin: 22px 0 26px;
+      margin-bottom: 18px;
     }
 
     .tag {
       font-size: 0.78rem;
       font-weight: 700;
-      padding: 5px 14px;
+      padding: 6px 16px;
       border-radius: 50px;
       color: var(--cream);
       background: var(--terra);
@@ -90,24 +104,54 @@
     .tag.tag-method { background: var(--sage); }
     .tag.tag-tortilla { background: var(--navy); }
 
-    .detail-content {
-      font-size: 1rem;
-      line-height: 2;
-      color: #333;
-      white-space: pre-wrap;
-      padding-top: 24px;
-      border-top: 1px solid rgba(43, 33, 25, 0.15);
+    .photo {
+      border-radius: 6px;
+      overflow: hidden;
+      background: #f2ede4;
+      aspect-ratio: 4 / 3;
     }
 
-    .detail-back-wrap {
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* 材料 / 作り方 */
+    .recipe {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 36px;
+    }
+
+    .recipe h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .recipe .body {
+      font-size: 0.92rem;
+      line-height: 2;
+      white-space: pre-wrap;
+    }
+
+    .recipe .empty {
+      font-size: 0.85rem;
+      color: rgba(17, 17, 17, 0.4);
+    }
+
+    .back-wrap {
       text-align: center;
       margin-top: 40px;
     }
 
-    .detail-back-btn {
+    .back-btn {
       display: inline-block;
       padding: 13px 40px;
-      background: var(--brown);
+      background: var(--ink);
       color: #fff;
       border-radius: 50px;
       text-decoration: none;
@@ -116,11 +160,13 @@
       transition: opacity 0.2s;
     }
 
-    .detail-back-btn:hover { opacity: 0.85; }
+    .back-btn:hover { opacity: 0.85; }
 
-    @media (max-width: 600px) {
-      .detail-card { padding: 32px 24px; border-radius: 22px; }
-      .detail-title { font-size: 1.45rem; }
+    @media (max-width: 640px) {
+      .card { padding: 30px 24px; border-radius: 24px; }
+      .head { grid-template-columns: 1fr; }
+      .taco-name { font-size: 1.45rem; }
+      .recipe { grid-template-columns: 1fr; gap: 26px; }
     }
   </style>
 </head>
@@ -128,7 +174,7 @@
 
   <div class="wrap">
     <a href="contents.html" class="top-back">← Back</a>
-    <div class="detail-card" id="detail-body">
+    <div class="card" id="detail-body">
       <p>読み込み中...</p>
     </div>
   </div>
@@ -142,27 +188,47 @@
       const res = await fetch('data.json?t=' + Date.now());
       const data = await res.json();
 
-      const item = (data.tacoTypes || []).find(t => t.id === id);
+      const t = (data.tacoTypes || []).find(x => x.id === id);
       const body = document.getElementById('detail-body');
 
-      if (!item) {
+      if (!t) {
         body.innerHTML = '<p>このタコスは見つかりませんでした。</p>';
         return;
       }
 
-      document.title = `${item.name} - タコス倶楽部`;
+      document.title = `${t.name} - タコス倶楽部`;
+
+      const tags = `
+        ${asList(t.meat).map(m => `<span class="tag">${m}</span>`).join('')}
+        ${asList(t.methods).map(m => `<span class="tag tag-method">${m}</span>`).join('')}
+        ${asList(t.tortilla).map(v => `<span class="tag tag-tortilla">${v}</span>`).join('')}`;
+
+      const photo = t.image
+        ? `<div class="photo"><img src="${t.image}" alt="${t.name}"></div>`
+        : '';
 
       body.innerHTML = `
-        <h2 class="detail-title">${item.name}</h2>
-        ${item.region ? `<div class="detail-region">${item.region}</div>` : ''}
-        <div class="detail-tags">
-          ${asList(item.meat).map(m => `<span class="tag">${m}</span>`).join('')}
-          ${asList(item.methods).map(m => `<span class="tag tag-method">${m}</span>`).join('')}
-          ${asList(item.tortilla).map(v => `<span class="tag tag-tortilla">${v}</span>`).join('')}
+        <div class="head">
+          <div>
+            <h1 class="taco-name">${t.name}</h1>
+            ${t.region ? `<div class="region">${t.region}</div>` : ''}
+            <div class="tags">${tags}</div>
+            <p class="feature">${t.desc || ''}</p>
+          </div>
+          ${photo}
         </div>
-        <div class="detail-content">${item.desc || ''}</div>
-        <div class="detail-back-wrap">
-          <a href="contents.html" class="detail-back-btn">← 一覧に戻る</a>
+        <div class="recipe">
+          <div>
+            <h2>材料</h2>
+            <div class="${t.ingredients ? 'body' : 'empty'}">${t.ingredients || '準備中'}</div>
+          </div>
+          <div>
+            <h2>作り方</h2>
+            <div class="${t.steps ? 'body' : 'empty'}">${t.steps || '準備中'}</div>
+          </div>
+        </div>
+        <div class="back-wrap">
+          <a href="contents.html" class="back-btn">← 一覧に戻る</a>
         </div>
       `;
     }
