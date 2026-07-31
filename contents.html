@@ -8,23 +8,27 @@
   <link rel="icon" href="icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Antique&family=Montserrat:wght@400;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --cream: #efe4cc;
-      --terra: #cf4f2b;
-      --red:   #b1302b;
-      --sage:  #6d7b50;
-      --navy:  #23303b;
-      --gold:  #d7a95a;
-      --brown: #2b2119;
+      --cream:  #f7f0e4;
+      --orange: #e8552b;
+      --ink:    #111;
+      --shadow: 5px 5px 0 var(--ink);
+      /* legacy aliases mapped onto the new palette */
+      --terra: var(--orange);
+      --red:   var(--orange);
+      --sage:  var(--ink);
+      --navy:  var(--ink);
+      --gold:  var(--orange);
+      --brown: var(--ink);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      color: var(--brown);
+      font-family: 'Montserrat', "游ゴシック体", YuGothic, "Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif;
+      color: var(--ink);
       background: var(--cream);
       min-height: 100vh;
     }
@@ -42,7 +46,7 @@
     .lock-screen.hidden { display: none; }
 
     .lock-title {
-      font-family: 'Zen Antique', serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 2rem;
       color: var(--terra);
     }
@@ -57,9 +61,9 @@
     .lock-form input {
       width: 240px;
       padding: 12px 16px;
-      border: 2px solid rgba(43, 33, 25, 0.2);
+      border: 3px solid var(--ink);
       border-radius: 10px;
-      background: #fff8ec;
+      background: #fff;
       font-family: 'Montserrat', sans-serif;
       font-size: 1rem;
       text-align: center;
@@ -86,12 +90,12 @@
 
     .lock-form button {
       padding: 10px 40px;
-      background: var(--terra);
-      color: var(--cream);
-      border: none;
+      background: var(--orange);
+      color: #fff;
+      border: 3px solid var(--ink);
       border-radius: 50px;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 800;
+      box-shadow: 4px 4px 0 var(--ink);
+      font-weight: 900;
       font-size: 0.9rem;
       cursor: pointer;
       transition: background 0.2s;
@@ -118,23 +122,24 @@
     .contents-page.visible { display: block; }
 
     .contents-header {
-      background: var(--sage);
-      color: var(--cream);
-      padding: 24px 32px;
+      background: var(--cream);
+      color: var(--ink);
+      border-bottom: 3px solid var(--ink);
+      padding: 22px 32px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
     .contents-header h1 {
-      font-family: 'Zen Antique', serif;
+      font-family: 'Montserrat', sans-serif;
       font-weight: 400;
       font-size: 1.5rem;
       letter-spacing: 0.04em;
     }
 
     .contents-header a {
-      color: var(--cream);
+      color: var(--ink);
       text-decoration: none;
       font-size: 0.9rem;
       opacity: 0.85;
@@ -150,7 +155,7 @@
     }
 
     .contents-body h2 {
-      font-family: 'Zen Antique', serif;
+      font-family: 'Montserrat', sans-serif;
       font-weight: 400;
       font-size: 2rem;
       color: var(--brown);
@@ -179,8 +184,10 @@
     .category-btn {
       position: relative;
       overflow: hidden;
-      min-height: 160px;
-      border-radius: 20px;
+      min-height: 150px;
+      border: 3px solid var(--ink);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -204,7 +211,7 @@
       position: absolute;
       right: -6px;
       bottom: -20px;
-      font-family: 'Zen Antique', serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 6.5rem;
       line-height: 1;
       opacity: 0.16;
@@ -215,12 +222,9 @@
     .category-btn:nth-child(3n+1) { grid-column: span 2; }
 
     /* rotating retro colors */
-    .category-btn:nth-child(6n+1) { background: var(--terra); color: var(--cream); }
-    .category-btn:nth-child(6n+2) { background: var(--sage); color: var(--cream); }
-    .category-btn:nth-child(6n+3) { background: var(--navy); color: var(--cream); }
-    .category-btn:nth-child(6n+4) { background: var(--gold); color: var(--brown); }
-    .category-btn:nth-child(6n+5) { background: var(--red); color: var(--cream); }
-    .category-btn:nth-child(6n+6) { background: var(--brown); color: var(--gold); }
+    .category-btn:nth-child(3n+1) { background: var(--orange); color: #fff; }
+    .category-btn:nth-child(3n+2) { background: var(--ink); color: var(--cream); }
+    .category-btn:nth-child(3n+3) { background: #fff; color: var(--ink); }
 
     /* Category detail */
     .category-heading {
@@ -260,19 +264,13 @@
     }
 
     .content-card {
-      background: #fff8ec;
-      border-radius: 16px;
+      background: #fff;
+      border-radius: 18px;
       padding: 24px;
-      border-top: 6px solid var(--terra);
-      box-shadow: 0 4px 16px rgba(43, 33, 25, 0.08);
+      border: 3px solid var(--ink);
+      box-shadow: var(--shadow);
     }
 
-    .content-card:nth-child(6n+1) { border-top-color: var(--terra); }
-    .content-card:nth-child(6n+2) { border-top-color: var(--sage); }
-    .content-card:nth-child(6n+3) { border-top-color: var(--navy); }
-    .content-card:nth-child(6n+4) { border-top-color: var(--gold); }
-    .content-card:nth-child(6n+5) { border-top-color: var(--red); }
-    .content-card:nth-child(6n+6) { border-top-color: var(--brown); }
 
     .content-card h3 {
       font-weight: 700;
@@ -290,20 +288,21 @@
 
     /* Taco type search (種類) */
     .taco-search {
-      background: #fff8ec;
-      border-radius: 20px;
+      background: #fff;
+      border: 3px solid var(--ink);
+      border-radius: 22px;
       padding: 26px 24px;
-      box-shadow: 0 4px 16px rgba(43, 33, 25, 0.08);
-      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 30px;
     }
 
     .taco-search input[type="search"] {
       width: 100%;
       padding: 13px 18px;
-      border: 2px solid rgba(43, 33, 25, 0.25);
+      border: 3px solid var(--ink);
       border-radius: 12px;
       background: #fff;
-      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-family: inherit;
       font-size: 1rem;
       color: var(--brown);
       transition: border-color 0.2s;
@@ -333,10 +332,10 @@
     .chip {
       padding: 8px 18px;
       border-radius: 50px;
-      border: 2px solid var(--brown);
-      background: transparent;
-      color: var(--brown);
-      font-family: 'Zen Kaku Gothic New', sans-serif;
+      border: 3px solid var(--ink);
+      background: #fff;
+      color: var(--ink);
+      font-family: inherit;
       font-size: 0.88rem;
       font-weight: 700;
       cursor: pointer;
@@ -345,9 +344,9 @@
 
     .chip:hover { transform: translateY(-1px); }
 
-    .chip.on-meat { background: var(--terra); border-color: var(--terra); color: var(--cream); }
-    .chip.on-method { background: var(--sage); border-color: var(--sage); color: var(--cream); }
-    .chip.on-tortilla { background: var(--navy); border-color: var(--navy); color: var(--cream); }
+    .chip.on-meat { background: var(--orange); border-color: var(--ink); color: #fff; }
+    .chip.on-method { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .chip.on-tortilla { background: var(--orange); border-color: var(--ink); color: #fff; }
 
     .taco-count {
       margin: 20px 0 14px;
@@ -364,26 +363,21 @@
 
     .taco-card {
       display: block;
-      background: #fff8ec;
-      border-radius: 16px;
+      background: #fff;
+      border-radius: 18px;
       padding: 22px;
-      border-top: 6px solid var(--terra);
-      box-shadow: 0 4px 16px rgba(43, 33, 25, 0.08);
+      border: 3px solid var(--ink);
+      box-shadow: var(--shadow);
       text-decoration: none;
       color: inherit;
       transition: transform 0.15s, box-shadow 0.15s;
     }
 
     .taco-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 22px rgba(43, 33, 25, 0.14);
+      transform: translate(3px, 3px);
+      box-shadow: 2px 2px 0 var(--ink);
     }
 
-    .taco-card:nth-child(6n+2) { border-top-color: var(--sage); }
-    .taco-card:nth-child(6n+3) { border-top-color: var(--navy); }
-    .taco-card:nth-child(6n+4) { border-top-color: var(--gold); }
-    .taco-card:nth-child(6n+5) { border-top-color: var(--red); }
-    .taco-card:nth-child(6n+6) { border-top-color: var(--brown); }
 
     .taco-card h4 {
       font-size: 1.05rem;
@@ -405,12 +399,12 @@
       font-weight: 700;
       padding: 3px 10px;
       border-radius: 50px;
-      color: var(--cream);
-      background: var(--terra);
+      color: #fff;
+      background: var(--orange);
     }
 
-    .taco-tag.tag-method { background: var(--sage); }
-    .taco-tag.tag-tortilla { background: var(--navy); }
+    .taco-tag.tag-method { background: var(--ink); }
+    .taco-tag.tag-tortilla { background: #fff; color: var(--ink); border: 2px solid var(--ink); }
 
     .taco-region {
       font-size: 0.72rem;
@@ -436,7 +430,7 @@
     }
 
     footer {
-      background: var(--red);
+      background: var(--ink);
       color: var(--cream);
       text-align: center;
       padding: 32px 20px;
